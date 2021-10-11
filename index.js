@@ -6,7 +6,7 @@ const apiRoutes = require('./routes/api.routes.js');
 const app = express()
 app.use(express.json());
 app.use(cors());
-const port = 3000
+const port = process.env.PORT || 3000
 
 // #TODO: Frontend homepage should respond at "/"
 app.get('/', (req, res) => {
