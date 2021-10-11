@@ -7,12 +7,11 @@ const app = express()
 app.use(express.json());
 app.use(cors());
 
-// #TODO: Frontend homepage should respond at "/"
-app.get('/', (req, res) => {
+// #TODO: Add login routes for login, reset password, change password
 
-})
+// #TODO: Add administrator routes (create/delete users)
 
-// #TODO: Backend should respond to "/api"
+// api routes
 app.use('/api', apiRoutes);
 
 // #TODO: General error handler + catch all 404
