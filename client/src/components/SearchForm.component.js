@@ -94,7 +94,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="NAME2" value={form.NAME2} onChange={(e) => onChangeTextField(e)} placeholder="Cognome..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, NAME2: '' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, NAME2: '', NAME2_OPERATION: 'EQUALS' })) }} />
                     </div>
                 </div>
 
@@ -107,7 +107,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="NAME1" value={form.NAME1} onChange={(e) => onChangeTextField(e)} placeholder="Nome..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, NAME1: '' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, NAME1: '', NAME1_OPERATION: 'EQUALS' })) }} />
                     </div>
                 </div>
 
@@ -120,7 +120,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="SEARCHTERM" value={form.SEARCHTERM} onChange={(e) => onChangeTextField(e)} placeholder="Search Term..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, SEARCHTERM: '' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, SEARCHTERM: '', SEARCHTERM_OPERATION: 'EQUALS' })) }} />
                     </div>
 
                 </div>
@@ -134,7 +134,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="STREET" value={form.STREET} onChange={(e) => onChangeTextField(e)} placeholder="Indrizzo..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, STREET: '' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, STREET: '', STREET_OPERATION: 'EQUALS' })) }} />
                     </div>
                 </div>
 
@@ -147,7 +147,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="CITY" value={form.CITY} onChange={(e) => onChangeTextField(e)} placeholder="Città..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, CITY: '' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, CITY: '', CITY_OPERATION: 'EQUALS' })) }} />
                     </div>
                 </div>
 
@@ -161,7 +161,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="POSTAL_CODE" value={form.POSTAL_CODE} onChange={(e) => onChangeTextField(e)} placeholder="CAP..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, POSTAL_CODE: '' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, POSTAL_CODE: '', POSTAL_CODE_OPERATION: 'EQUALS' })) }} />
                     </div>
                 </div>
 
@@ -174,7 +174,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="EMAIL" value={form.EMAIL} onChange={(e) => onChangeTextField(e)} placeholder="Email..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, EMAIL: '' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, EMAIL: '', EMAIL_OPERATION: 'EQUALS' })) }} />
                     </div>
                 </div>
 
