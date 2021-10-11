@@ -8,13 +8,16 @@ app.use(express.json());
 app.use(cors());
 const port = 3000
 
-
+// #TODO: Frontend homepage should respond at "/"
 app.get('/', (req, res) => {
-    res.send("Hello World");
+
 })
 
+// #TODO: Backend should respond to "/api"
 app.use('/api', apiRoutes);
 
+// #TODO: General error handler + catch all 404
+
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`MDH Search Tool listening at http://localhost:${port}`)
 })

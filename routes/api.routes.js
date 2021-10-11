@@ -8,19 +8,12 @@ router.post('/query', query);
 router.get('/query/:id', fetchById);
 
 async function preCheck(req, res, next) {
-    console.log("preCheck entered");
 
-    if (req.query["api-key"] && req.query["api-key"] == "Hello") {
-        next();
-    } else {
-        res.send("Unauthorized");
-    }
-
+    // #TODO: Implement check of Javascript Web Token here. User must be logged in.
+    next();
 }
 
 async function query(req, res, next) {
-    console.log("queryGR entered");
-
     // STRING FILTERS: EQUALS, NOT_EQUALS, STARTS_WITH, ENDS_WITH, CONTAINS, IS_NOT_NULL, IS_NULL
     // DATE FILTERS: EQUALS, NOT_EQUALS, IS_NOT_NULL, IS_NULL, BETWEEN
     // NUMBER FILTERS: UNKNOWN
@@ -32,7 +25,7 @@ async function query(req, res, next) {
         return `<fieldValue><fieldId>${key}</fieldId><operator>${filterData[key].operator}</operator><value>${filterData[key].value}</value></fieldValue>`;
     })
 
-    // Manage sort
+    // Manage sort fields
     const sortData = req.body.sort;
     const sortXML = Object.keys(sortData).map(key => {
         return `<sortField><fieldId>${key}</fieldId><direction>${sortData[key].value}</direction></sortField>`
@@ -82,7 +75,6 @@ async function query(req, res, next) {
 }
 
 async function fetchById(req, res, next) {
-    console.log("fetchById entered");
     const id = req.params.id;
 
     const host = process.env.MDH_HOST;

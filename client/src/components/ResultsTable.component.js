@@ -3,18 +3,21 @@ import { FaStar, FaQuestionCircle } from 'react-icons/fa';
 
 const ResultsTable = ({ results, onSelectResult }) => {
 
+    // listen to the results prop and render on change
     useEffect(() => {
-        console.log("useEffect running with ", results);
+        // if only one Record is returned, make it an array so it's easier to handle later
         if (results.Record && !Array.isArray(results.Record)) {
             results.Record = [results.Record];
         }
     }, [results])
 
     const createAddress = (address) => {
+        // if address is not an array, turn it into one
         if (!Array.isArray(address)) {
             address = [address];
         }
 
+        // format the address string
         const formattedAddresses = address.map((a, idx) => {
             const addressElements = [a.street, a.civic_number, a.city, a.postal_code].filter(a => (!!a)).join(', ');
             return <div key={idx} style={{ borderBottom: '1px solid #EEE' }}>{addressElements}</div>
@@ -23,6 +26,8 @@ const ResultsTable = ({ results, onSelectResult }) => {
         return formattedAddresses;
     }
 
+    // show record status
+    // #TODO: Need to manage quarantined records, changed records.
     const getStatus = (status) => {
         switch (status) {
             case 'GoldenRecord':

@@ -1,6 +1,5 @@
 const LoadingSpinner = ({ visible }) => {
 
-
     if (!visible) {
         return null;
     }

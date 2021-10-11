@@ -39,9 +39,18 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
         setForm(f => ({ ...f, [field]: value }));
     }
 
+    const resetField = (name) => {
+        const operationField = `${name}_OPERATION`;
+        setForm(f => ({ ...f, [name]: '', [operationField]: 'EQUALS' }));
+    }
+
     const submitForm = async () => {
         const output = {};
+
+        // fields to display
         output.view = ['SAP_ID', 'NAME2', 'NAME1', 'STREET', 'CIVIC_NUMBER', 'CITY', 'POSTAL_CODE'];
+
+        // sort fields
         output.sort = {
             NAME2: {
                 value: 'ASC'
@@ -51,30 +60,38 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
             }
         }
 
+        // filter fields
+        // ignore blank fields and operation fields
         const fields = Object.keys(form).filter(k => {
             return form[k].trim() !== '' && (k.substr(-10) !== '_OPERATION');
         }).reduce((out, k) => {
-            console.log(k)
+            // reduce to a single object we can pass to the backend
             out[k] = { value: form[k], operator: form[`${k}_OPERATION`] }
             return out;
         }, {});
 
+        // show error if no filter is selected
         output.filter = fields;
         if (Object.keys(output.filter).length === 0) {
             setState({ error: 'Va specificato almeno un filtro' });
             return;
         }
 
+        // show loading spinner
         setLoading(true);
 
+        // call backend with data
         try {
-            const results = await axios.post('http://localhost:3000/api/query?api-key=Hello', output);
-            console.log(results.data);
-            setResults(results.data.RecordQueryResponse);
+            // #TODO manage javascript web token in Bearer header
+            const results = await axios.post('http://localhost:3000/api/query', output);
 
+            // pass results to parent component
+            setResults(results.data.RecordQueryResponse);
         } catch (err) {
+            // show the error on the form
             setFormState({ error: err });
         } finally {
+            // whatever happens, hide the loading spinner.
             setLoading(false);
         }
 
@@ -94,7 +111,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="NAME2" value={form.NAME2} onChange={(e) => onChangeTextField(e)} placeholder="Cognome..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, NAME2: '', NAME2_OPERATION: 'EQUALS' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={() => { resetField('NAME2') }} />
                     </div>
                 </div>
 
@@ -107,7 +124,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="NAME1" value={form.NAME1} onChange={(e) => onChangeTextField(e)} placeholder="Nome..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, NAME1: '', NAME1_OPERATION: 'EQUALS' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={() => { resetField('NAME1') }} />
                     </div>
                 </div>
 
@@ -120,7 +137,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="SEARCHTERM" value={form.SEARCHTERM} onChange={(e) => onChangeTextField(e)} placeholder="Search Term..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, SEARCHTERM: '', SEARCHTERM_OPERATION: 'EQUALS' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={() => { resetField('SEARCHTERM') }} />
                     </div>
 
                 </div>
@@ -134,7 +151,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="STREET" value={form.STREET} onChange={(e) => onChangeTextField(e)} placeholder="Indrizzo..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, STREET: '', STREET_OPERATION: 'EQUALS' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={() => { resetField('STREET') }} />
                     </div>
                 </div>
 
@@ -147,7 +164,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="CITY" value={form.CITY} onChange={(e) => onChangeTextField(e)} placeholder="Città..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, CITY: '', CITY_OPERATION: 'EQUALS' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={() => { resetField('CITY') }} />
                     </div>
                 </div>
 
@@ -161,7 +178,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="POSTAL_CODE" value={form.POSTAL_CODE} onChange={(e) => onChangeTextField(e)} placeholder="CAP..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, POSTAL_CODE: '', POSTAL_CODE_OPERATION: 'EQUALS' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={() => { resetField('POSTAL_CODE') }} />
                     </div>
                 </div>
 
@@ -174,7 +191,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
                         <input className="form-control" type="text" name="EMAIL" value={form.EMAIL} onChange={(e) => onChangeTextField(e)} placeholder="Email..." />
                     </div>
                     <div className="col-sm-1">
-                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={e => { setForm(f => ({ ...f, EMAIL: '', EMAIL_OPERATION: 'EQUALS' })) }} />
+                        <FaTimes size={16} style={{ cursor: "pointer" }} color="#F00" onClick={() => { resetField('EMAIL') }} />
                     </div>
                 </div>
 

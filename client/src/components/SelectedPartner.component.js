@@ -5,19 +5,19 @@ import { useEffect, useState } from "react";
 const SelectedPartner = ({ selectedPartner, onClose, setLoading }) => {
 
     const [state, setState] = useState({
-        loading: true,
+        loading: false,
         error: null
     })
     const [partner, setPartner] = useState({});
 
     // load selected partner
+    // #TODO: pass javascript web token
     useEffect(() => {
 
         const fetchSelectedPartner = async () => {
 
-            console.log("loading partner");
             try {
-                const response = await axios.get(`http://localhost:3000/api/query/${selectedPartner}?api-key=Hello`);
+                const response = await axios.get(`http://localhost:3000/api/query/${selectedPartner}`);
                 setPartner(response.data);
             } catch (err) {
                 console.error(err);
