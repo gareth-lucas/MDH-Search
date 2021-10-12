@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const SelectedPartner = ({ selectedPartner, onClose, setLoading }) => {
 
     const [state, setState] = useState({
-        loading: false,
+        loading: true,
         error: null
     })
     const [partner, setPartner] = useState({});
