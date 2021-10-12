@@ -83,7 +83,8 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
         // call backend with data
         try {
             // #TODO manage javascript web token in Bearer header
-            const results = await axios.post('http://localhost:3000/api/query', output);
+            // #TODO make the port an environment parameter
+            const results = await axios.post('http://localhost:4000/api/query', output);
 
             // pass results to parent component
             setResults(results.data.RecordQueryResponse);

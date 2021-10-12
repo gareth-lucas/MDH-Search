@@ -16,8 +16,9 @@ const SelectedPartner = ({ selectedPartner, onClose, setLoading }) => {
 
         const fetchSelectedPartner = async () => {
 
+            // #TODO: Make the port an environment parameter
             try {
-                const response = await axios.get(`http://localhost:3000/api/query/${selectedPartner}`);
+                const response = await axios.get(`http://localhost:4000/api/query/${selectedPartner}`);
                 setPartner(response.data);
             } catch (err) {
                 console.error(err);
