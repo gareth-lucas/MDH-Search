@@ -1,43 +1,59 @@
-import './App.css';
-import { useState } from 'react';
-import NavBar from './components/NavBar.component';
-import SearchForm from './components/SearchForm.component';
-import ResultsTable from './components/ResultsTable.component';
-import SelectedPartner from './components/SelectedPartner.component';
-import LoadingSpinner from './components/LoadingSpinner.component';
-import ErrorDiv from './components/ErrorDiv.component';
+import "./App.css";
+import { Fragment, useState } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import NavBar from "./components/NavBar.component";
+import LoadingSpinner from "./components/LoadingSpinner.component";
+import ErrorDiv from "./components/ErrorDiv.component";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Administration from "./pages/Administration";
 
-function App() {
-
+const App = () => {
   const [state, setState] = useState({
-    error: null
+    error: null,
   });
 
   const [results, setResults] = useState([]);
   const [selectedPartner, setSelectedParter] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  return (
-    <>
-      <LoadingSpinner visible={loading} />
-      <ErrorDiv error={state.error} onClose={() => setState(s => ({ ...s, error: null }))} />
-      <div className="container">
-        <NavBar currentPage={"Test"} />
-        <div className="row">
-          <div className="col-sm-6 pt-3">
-            <SearchForm setResults={setResults} setState={setState} setLoading={setLoading} />
-          </div>
-          <div className="col-sm-6 pt-3">
-            <ResultsTable results={results} onSelectResult={setSelectedParter} />
-          </div>
-        </div>
-        {selectedPartner &&
-          <SelectedPartner selectedPartner={selectedPartner} onClose={e => setSelectedParter(null)} setLoading={setLoading} />
-        }
-      </div>
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-    </>
+  return (
+    <Router>
+      <LoadingSpinner visible={loading} />
+      <ErrorDiv
+        error={state.error}
+        onClose={() => setState((s) => ({ ...s, error: null }))}
+      />
+      <NavBar
+        currentPage={"Test"}
+        isAuthenticated={isAuthenticated}
+        changeAuth={setIsAuthenticated}
+      />
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={(props) => (
+            <Fragment>
+              <Home
+                setResults={setResults}
+                setState={setState}
+                setLoading={setLoading}
+                results={results}
+                onSelectResult={setSelectedParter}
+                selectedPartner={selectedPartner}
+                onClose={setSelectedParter}
+              />
+            </Fragment>
+          )}
+        />
+        <Route exact path="/admin" component={Administration} />
+        <Route exact path="/login" component={Login} />
+      </Switch>
+    </Router>
   );
-}
+};
 
 export default App;
