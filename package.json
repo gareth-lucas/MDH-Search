@@ -5,15 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:local": "node index.js"
+    "start:local": "NODE_ENV=development node index.js",
+    "setup": "node setup.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.22.0",
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "nanoid": "^3.1.30",
+    "nodemailer": "^6.7.0",
+    "sqlite3": "^4.2.0",
     "xml2js": "^0.4.23"
   }
 }
