@@ -27,7 +27,7 @@ async function login(req, res, next) {
 
 async function logout(req, res, next) {
     try {
-
+        res.status(400).send({ message: "Not Implemented" })
     } catch (err) {
         console.error(err);
         next(err);
@@ -36,7 +36,7 @@ async function logout(req, res, next) {
 
 async function changePassword(req, res, next) {
     try {
-
+        res.status(400).send({ message: "Not Implemented" })
     } catch (err) {
         console.error(err);
         next(err);
@@ -45,7 +45,7 @@ async function changePassword(req, res, next) {
 
 async function resetPassword(req, res, next) {
     try {
-
+        res.status(400).send({ message: "Not Implemented" })
     } catch (err) {
         console.error(err);
         next(err);

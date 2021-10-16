@@ -1,3 +1,6 @@
+// substitutes placeholders in templates, like {variable} to the content of data.variable
+// "Hi my name is {name}" becomes "Hi my name is ${data.name}".
+
 const interpolate = (template, data) => {
 
     const fieldsRegexp = new RegExp("{(.*?)}", "gm");
