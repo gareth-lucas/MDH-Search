@@ -57,7 +57,6 @@ async function getUserById(id) {
 async function getUserByEmail(email) {
     return new Promise(async (resolve, reject) => {
         const db = await database.fetch();
-        console.log(email);
 
         db.get(`SELECT rowid, email, name, surname, lastLogin, password FROM users WHERE email=$email`, { $email: email }, (err, row) => {
             if (err) {
