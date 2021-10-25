@@ -1,35 +1,50 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 const Register = (props) => {
-  const [alert, setAlert] = useState(null);
+  const { isAuthenticated, showAlert } = props;
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     props.history.push("/");
-  //   }
+  useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push("/");
+    }
 
-  //   //eslint-disable-next-line
-  // }, [isAuthenticated, props.history]);
+    //eslint-disable-next-line
+  }, [isAuthenticated, props.history]);
 
   const [user, setUser] = useState({
     name: "",
+    surname: "",
     email: "",
-    password: "",
-    password2: "",
   });
 
-  const { name, email, password, password2 } = user;
+  const { name, surname, email } = user;
 
   const onChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (name === "" || email === "" || password === "") {
-      setAlert("Please  enter all fields");
-    } else if (password !== password2) {
-      setAlert("Passwords do not match");
+    if (name === "" || surname === "" || email === "") {
+      showAlert("Please  enter all fields", "light");
     } else {
-      setAlert(null);
-      console.log("register");
+      // const url=`${process.env.DB_URL}/admin/users`
+      axios
+        .post("http://localhost:4000/admin/users", {
+          email,
+          name,
+          surname,
+        })
+        .then((res) => {
+          console.log(res);
+          setUser({
+            name: "",
+            surname: "",
+            email: "",
+          });
+          // showAlert(null);
+          console.log("register");
+        })
+        .catch((err) => console.error(err));
     }
   };
 
@@ -50,6 +65,16 @@ const Register = (props) => {
           />
         </div>
         <div className="form-group">
+          <label htmlFor="name">Surname</label>
+          <input
+            type="text"
+            name="surname"
+            value={surname}
+            onChange={onChange}
+            required
+          />
+        </div>
+        <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
             type="email"
@@ -57,28 +82,6 @@ const Register = (props) => {
             value={email}
             onChange={onChange}
             required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={onChange}
-            required
-            minLength="6"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password2">Confirm Password</label>
-          <input
-            type="password"
-            name="password2"
-            value={password2}
-            onChange={onChange}
-            required
-            minLength="6"
           />
         </div>
         <input

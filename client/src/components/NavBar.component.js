@@ -9,7 +9,7 @@ const NavBar = ({ isAuthenticated, changeAuth, userName }) => {
     //clear data
     changeAuth(false);
 
-    document.cookie = "token" + "=; Path=/; Expires=" + Date.now();
+    document.cookie = "token=; Path=/; Expires=" + Date.now();
   };
 
   const authLinks = (

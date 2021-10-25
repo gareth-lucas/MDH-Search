@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Administration from "./pages/Administration";
 import PrivateRoute from "./routing/PrivateRoute";
+import Alert from "./layout/Alert";
 
 const App = () => {
   const [state, setState] = useState({
@@ -21,13 +22,20 @@ const App = () => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState("");
+  const [alert, setAlert] = useState(null);
+
+  const showAlert = (msg, type) => {
+    setAlert({ msg, type });
+
+    setTimeout(() => setAlert(null), 5000);
+  };
 
   useEffect(() => {
     const cookie = document.cookie.match(/^(.*;)?\s*token\s*=\s*[^;]+(.*)?$/);
     if (cookie !== null) {
       setIsAuthenticated(true);
     }
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <Router>
@@ -42,6 +50,7 @@ const App = () => {
         changeAuth={setIsAuthenticated}
         userName={userName}
       />
+      {alert !== null && <Alert alert={alert} />}
       <Switch>
         <PrivateRoute
           exact
@@ -67,10 +76,15 @@ const App = () => {
               setIsAuthenticated={setIsAuthenticated}
               isAuthenticated={isAuthenticated}
               setUserName={setUserName}
+              showAlert={showAlert}
             />
           )}
         />
-        <Route exact path="/register" component={Register} />
+        <Route
+          exact
+          path="/register"
+          render={(props) => <Register {...props} showAlert={showAlert} />}
+        />
       </Switch>
     </Router>
   );

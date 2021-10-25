@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Login = (props) => {
-  const { isAuthenticated, setIsAuthenticated, setUserName } = props;
+  const { isAuthenticated, setIsAuthenticated, setUserName, showAlert } = props;
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -17,8 +17,6 @@ const Login = (props) => {
     password: "",
   });
 
-  const [alert, setAlert] = useState(null);
-
   const { email, password } = user;
 
   const onChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
@@ -26,7 +24,7 @@ const Login = (props) => {
   const onSubmit = (e) => {
     e.preventDefault();
     if (email === "" || password === "") {
-      setAlert("Please fill in all fields");
+      showAlert("Please fill in all fields", "danger");
     } else {
       console.log("login");
       // const url = `${process.env.DB_URL}/security/login`;
@@ -40,6 +38,7 @@ const Login = (props) => {
           setIsAuthenticated(true);
           const nameUser = res.data.user.name;
           setUserName(nameUser);
+          // showAlert(null);
         })
         .catch((err) => console.error(err));
     }

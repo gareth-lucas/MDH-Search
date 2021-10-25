@@ -329,7 +329,7 @@ table th {
 
 .alert {
   padding: 0.7rem;
-  margin: 1rem 0;
+  margin: 1rem;
   opacity: 0.9;
   background: var(--light-color);
   color: #333;
