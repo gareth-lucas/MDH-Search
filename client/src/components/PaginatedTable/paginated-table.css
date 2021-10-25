@@ -1,0 +1,18 @@
+input.column-filter {
+  border-top-style: hidden;
+  border-left-style: hidden;
+  border-right-style: hidden;
+  border-bottom-style: groove;
+  border-bottom-color: #EEE;
+}
+  
+input.column-filter:focus {
+  outline:none;
+  border-bottom-color: #EEE;
+}
+
+.button-link {
+  border: 0px;
+  background-color: #FFF;
+  text-decoration: underline;
+}
