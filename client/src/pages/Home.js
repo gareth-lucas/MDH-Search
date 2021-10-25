@@ -25,7 +25,7 @@ const Home = ({
       {selectedPartner && (
         <SelectedPartner
           selectedPartner={selectedPartner}
-          onClose={(e) => onClose(null)}
+          onClose={() => onClose()}
           setLoading={setLoading}
         />
       )}

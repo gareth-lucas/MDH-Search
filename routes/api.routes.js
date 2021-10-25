@@ -9,8 +9,14 @@ router.get('/query/:id', fetchById);
 
 async function preCheck(req, res, next) {
 
+    // check if json web token is valid...
+
     // #TODO: Implement check of Javascript Web Token here. User must be logged in.
-    next();
+    if (true) {
+        next();
+    } else {
+        res.status(400).send({ error: "Error in JSON Web Token" });
+    }
 }
 
 async function query(req, res, next) {

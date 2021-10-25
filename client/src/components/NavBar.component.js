@@ -1,4 +1,3 @@
-import e from "cors";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
 
