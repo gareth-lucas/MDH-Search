@@ -1,6 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Login = (props) => {
+  const { isAuthenticated, setIsAuthenticated, setUserName } = props;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push("/");
+    }
+
+    //eslint-disable-next-line
+  }, [isAuthenticated, props.history]);
+
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -15,9 +26,22 @@ const Login = (props) => {
   const onSubmit = (e) => {
     e.preventDefault();
     if (email === "" || password === "") {
-      setAlert("Please fill in all fields", "danger");
+      setAlert("Please fill in all fields");
     } else {
       console.log("login");
+      // const url = `${process.env.DB_URL}/security/login`;
+      axios
+        .post("http://localhost:4000/security/login", {
+          email,
+          password,
+        })
+        .then((res) => {
+          document.cookie = "token=" + res.data.token + "; Path=/;";
+          setIsAuthenticated(true);
+          const nameUser = res.data.user.name;
+          setUserName(nameUser);
+        })
+        .catch((err) => console.error(err));
     }
   };
 

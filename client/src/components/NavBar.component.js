@@ -1,18 +1,20 @@
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
 
-const NavBar = ({ isAuthenticated, changeAuth }) => {
+const NavBar = ({ isAuthenticated, changeAuth, userName }) => {
   // #TODO: Add login, page of recent searches
 
   const onLogout = () => {
     //logout
     //clear data
     changeAuth(false);
+
+    document.cookie = "token" + "=; Path=/; Expires=" + Date.now();
   };
 
   const authLinks = (
     <Fragment>
-      <li>Hello user</li>
+      <li>Hello, {userName}</li>
       <li>
         <a onClick={onLogout} href="/login">
           <i className="fas fa-sign-out-alt"></i>
