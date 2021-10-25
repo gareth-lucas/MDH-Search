@@ -73,7 +73,7 @@ const ResultsTable = ({ results, onSelectResult }) => {
                   <td>{fields.sap_id}</td>
                   <td>{fields.name2}</td>
                   <td>{fields.name1}</td>
-                  <td>{createAddress(fields.addresses.address)}</td>
+                  <td>{createAddress(fields.address)}</td>
                   <td>{getStatus(results.$.origin)}</td>
                 </tr>
               );
