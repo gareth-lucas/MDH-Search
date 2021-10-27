@@ -2,6 +2,7 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 router.use('/', preCheck);
 router.post('/query', query);
@@ -10,13 +11,24 @@ router.get('/query/:id', fetchById);
 async function preCheck(req, res, next) {
 
     // check if json web token is valid...
+    var token = req.body.token || req.query.token || req.headers.authorization;
 
-    // #TODO: Implement check of Javascript Web Token here. User must be logged in.
-    if (true) {
-        next();
-    } else {
-        res.status(400).send({ error: "Error in JSON Web Token" });
+    if (!token) {
+        return res.status(403).send({ message: `Per accedere alle API si richiede un token. Effettua il login di nuovo` });
     }
+
+    if (token.substr(0, 6).toUpperCase() === 'BEARER') token = token.substr(7);
+
+    // Check of Javascript Web Token here. User must be logged in.
+    try {
+        const decoded = jwt.decode(token, process.env.JWT_SECRET);
+        req.user = decoded;
+    } catch (err) {
+        return res.status(400).send({ error: "Error in JSON Web Token" });
+    }
+
+    next();
+
 }
 
 async function query(req, res, next) {
@@ -25,6 +37,7 @@ async function query(req, res, next) {
     // NUMBER FILTERS: UNKNOWN
 
     // Manage filters
+    console.log(req.user);
     const filterData = req.body.filter;
 
     const filterXML = Object.keys(filterData).map(key => {

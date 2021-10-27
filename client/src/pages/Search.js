@@ -1,17 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchForm from "../components/SearchForm.component";
 import ResultsTable from "../components/ResultsTable.component";
 import SelectedPartner from "../components/SelectedPartner.component";
 
-const Home = ({
-  setResults,
+const Search = ({
   setState,
-  setLoading,
-  results,
-  onSelectResult,
-  selectedPartner,
-  onClose,
+  setLoading
 }) => {
+
+  const [results, setResults] = useState([]);
+  const [selectedPartner, setSelectedPartner] = useState(null);
+
   return (
     <div className="container">
       <div className="row">
@@ -20,12 +19,12 @@ const Home = ({
           setState={setState}
           setLoading={setLoading}
         />
-        <ResultsTable results={results} onSelectResult={onSelectResult} />
+        <ResultsTable results={results} onSelectResult={(result) => setSelectedPartner(result)} />
       </div>
       {selectedPartner && (
         <SelectedPartner
           selectedPartner={selectedPartner}
-          onClose={() => onClose()}
+          onClose={() => setSelectedPartner(null)}
           setLoading={setLoading}
         />
       )}
@@ -33,4 +32,4 @@ const Home = ({
   );
 };
 
-export default Home;
+export default Search;

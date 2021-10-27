@@ -1,81 +1,85 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { Link } from "react-router-dom";
+import { authenticationService } from "../services/authentication.service";
 
 const Login = (props) => {
-  const { isAuthenticated, setIsAuthenticated, setUserName, showAlert } = props;
+  const { currentUser } = props;
 
   useEffect(() => {
-    if (isAuthenticated) {
-      props.history.push("/");
+    if (currentUser) {
+      props.history.push("/search");
     }
 
-    //eslint-disable-next-line
-  }, [isAuthenticated, props.history]);
+  }, [currentUser, props.history]);
 
+  const [error, setError] = useState(null);
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
 
-  const { email, password } = user;
-
   const onChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (email === "" || password === "") {
-      showAlert("Please fill in all fields", "danger");
-    } else {
-      console.log("login");
-      // const url = `${process.env.DB_URL}/security/login`;
-      axios
-        .post("http://localhost:4000/security/login", {
-          email,
-          password,
-        })
-        .then((res) => {
-          document.cookie = "token=" + res.data.token + "; Path=/;";
-          setIsAuthenticated(true);
-          const nameUser = res.data.user.name;
-          setUserName(nameUser);
-          // showAlert(null);
-        })
-        .catch((err) => console.error(err));
+  const onSubmit = async () => {
+    try {
+      const loginResult = await authenticationService.login(user.email, user.password);
+
+      console.log("loginResult", loginResult);
+
+      if (loginResult.passwordChange) {
+        props.history.push(`/passwordReset?email=${encodeURI(loginResult.user.email)}`);
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.response.data.message);
     }
   };
 
   return (
-    <div className="form-container">
-      <h1>
-        Account <span className="text-primary">Login</span>
-      </h1>
-      <form onSubmit={onSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-sm-3 text-center p-2 mt-3 ses-border ses-bg-secondary" style={{ borderRadius: "15px" }}>
+          <h1>
+            Account <span className="ses-primary">Login</span>
+          </h1>
+          {error &&
+            <div className="text-danger">{error}</div>
+          }
+          <div className="form-group text-left">
+            <input
+              type="text"
+              name="email"
+              value={user.email}
+              onChange={onChange}
+              placeholder="Indirizzo Email / Username"
+              className="form-control"
+              autoFocus={true}
+              required
+            />
+          </div>
+          <div className="form-group mt-2">
+            <input
+              type="password"
+              name="password"
+              value={user.password}
+              onChange={onChange}
+              placeholder="Password"
+              className="form-control"
+              required
+            />
+          </div>
           <input
-            type="text"
-            name="email"
-            value={email}
-            onChange={onChange}
-            required
+            type="submit"
+            value="Login"
+            className="btn btn-primary mt-2"
+            onClick={() => onSubmit()}
           />
+          <div>
+            <Link to="/resetPassword">password dimenticata?</Link>
+          </div>
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={onChange}
-            required
-          />
-        </div>
-        <input
-          type="submit"
-          value="Login"
-          className="btn btn-primary btn-block"
-        />
-      </form>
+      </div>
     </div>
   );
 };

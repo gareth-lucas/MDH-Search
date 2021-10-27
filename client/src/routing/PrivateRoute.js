@@ -3,7 +3,7 @@ import { Route, Redirect } from "react-router-dom";
 
 const PrivateRoute = ({
   component: Component,
-  isAuthenticated,
+  currentUser,
   loading,
   setState,
   setLoading,
@@ -18,20 +18,23 @@ const PrivateRoute = ({
     <Route
       {...rest}
       render={(props) =>
-        !isAuthenticated && !loading ? (
+        !currentUser?.token && !loading ? (
           <Redirect to="/login" />
-        ) : (
-          <Component
-            {...props}
-            setState={setState}
-            setLoading={setLoading}
-            results={results}
-            onSelectResult={onSelectResult}
-            selectedPartner={selectedPartner}
-            setResults={setResults}
-            onClose={onClose}
-          />
-        )
+        ) : currentUser.passwordChange ?
+          <Redirect to="/passwordReset" />
+          : (
+            <Component
+              {...props}
+              setState={setState}
+              setLoading={setLoading}
+              currentUser={currentUser}
+              results={results}
+              onSelectResult={onSelectResult}
+              selectedPartner={selectedPartner}
+              setResults={setResults}
+              onClose={onClose}
+            />
+          )
       }
     />
   );

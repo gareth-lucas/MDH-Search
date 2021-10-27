@@ -1,7 +1,8 @@
-import axios from "axios";
+import React from 'react';
 import { FaTimes } from "react-icons/fa";
 import { useState } from "react";
 import OperationDropdown from "./OperationDropdown.component";
+import { searchService } from '../services/search.service';
 
 const SearchForm = ({ setResults, setState, setLoading }) => {
   const [form, setForm] = useState({
@@ -93,16 +94,17 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
     try {
       // #TODO manage javascript web token in Bearer header
       // #TODO make the port an environment parameter
-      const results = await axios.post(
-        "http://localhost:4000/api/query",
-        output
-      );
+      // const results = await axios.post(
+      //   "/api/query",
+      //   output
+      // );
+      const results = await searchService.query(output);
 
       // pass results to parent component
-      setResults(results.data.RecordQueryResponse);
+      setResults(results.RecordQueryResponse);
     } catch (err) {
       // show the error on the form
-      setFormState({ error: err });
+      setFormState({ error: err.response.data.message });
     } finally {
       // whatever happens, hide the loading spinner.
       setLoading(false);
@@ -151,7 +153,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="form-group row pt-1">
           <label htmlFor="NAME1" className="col-sm-3 col-form-label">
             Nome
           </label>
@@ -186,9 +188,9 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="form-group row pt-1">
           <label htmlFor="SEARCHTERM" className="col-sm-3 col-form-label">
-            Termine Ricerca
+            Search Term
           </label>
           <div className="col-sm-2">
             <OperationDropdown
@@ -221,7 +223,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="form-group row pt-1">
           <label htmlFor="STREET" className="col-sm-3 col-form-label">
             Indirizzo
           </label>
@@ -256,10 +258,8 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
           </div>
         </div>
 
-        <div className="form-group row">
-          <label htmlFor="CITY" className="col-sm-3 col-form-label">
-            City
-          </label>
+        <div className="form-group row pt-1">
+          <label htmlFor="CITY" className="col-sm-3 col-form-label">City</label>
           <div className="col-sm-2">
             <OperationDropdown
               name="CITY_OPERATION"
@@ -291,7 +291,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="form-group row pt-1">
           <label htmlFor="POSTAL_CODE" className="col-sm-3 col-form-label">
             CAP
           </label>
@@ -326,7 +326,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="form-group row pt-1">
           <label htmlFor="EMAIL" className="col-sm-3 col-form-label">
             Email
           </label>
@@ -361,7 +361,7 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
           </div>
         </div>
 
-        <div className="form-group">
+        <div className="form-group pt-1">
           <button
             type="submit"
             className="btn btn-primary"

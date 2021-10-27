@@ -13,7 +13,7 @@ const runSetup = async () => {
             db.run(drop);
 
             console.log("Creating user table...")
-            var sql = `CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, name TEXT, surname TEXT, password TEXT, lastLogin DATETIME, resetCode TEXT, forceResetOn DATETIME)`;
+            var sql = `CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, name TEXT, surname TEXT, password TEXT, lastLogin DATETIME, resetCode TEXT, forceResetOn DATETIME, role TEXT)`;
             db.run(sql, {}, function (err) {
                 if (err) {
                     console.error("ERROR:", err);
@@ -36,8 +36,9 @@ const runSetup = async () => {
             const lastLogin = null;
             const resetCode = null;
             const forceResetOn = new Date(1970, 01, 01);
-            sql = `INSERT INTO users (email, name, surname, password, lastLogin, resetCode, forceResetOn) VALUES ($email, $name, $surname, $pw, $lastLogin, $resetCode, $forceResetOn) ON CONFLICT (email) DO NOTHING`;
-            db.run(sql, { $email: email, $name: name, $surname: surname, $lastLogin: lastLogin, $resetCode: resetCode, $pw: pw, $forceResetOn: forceResetOn }, function (err) {
+            const role = 'ADMIN';
+            sql = `INSERT INTO users (email, name, surname, password, lastLogin, resetCode, forceResetOn, role) VALUES ($email, $name, $surname, $pw, $lastLogin, $resetCode, $forceResetOn, $role) ON CONFLICT (email) DO NOTHING`;
+            db.run(sql, { $email: email, $name: name, $surname: surname, $lastLogin: lastLogin, $resetCode: resetCode, $pw: pw, $forceResetOn: forceResetOn, $role: role }, function (err) {
                 if (err) {
                     console.error("ERROR: ", err);
                 }

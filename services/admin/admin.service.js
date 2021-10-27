@@ -20,7 +20,7 @@ async function getAllUsers() {
     const db = await database.fetch();
 
     db.all(
-      `SELECT rowid, email, name, surname, lastLogin FROM users`,
+      `SELECT rowid, email, name, surname, lastLogin, role FROM users ORDER BY surname`,
       (err, rows) => {
         if (err) {
           console.error(err);
@@ -34,6 +34,7 @@ async function getAllUsers() {
             name: row.name,
             surname: row.surname,
             lastLogin: row.lastLogin,
+            role: row.role
           };
         });
         resolve(results);
@@ -47,7 +48,7 @@ async function getUserById(id) {
     const db = await database.fetch();
 
     db.get(
-      `SELECT rowid, email, name, surname, lastLogin, password FROM users WHERE rowid=$rowid`,
+      `SELECT rowid, email, name, surname, lastLogin, password, resetCode, forceResetOn, role FROM users WHERE rowid=$rowid`,
       { $rowid: id },
       (err, row) => {
         if (err) {
@@ -66,6 +67,9 @@ async function getUserById(id) {
           surname: row.surname,
           lastLogin: row.lastLogin,
           password: row.password,
+          resetCode: row.resetCode,
+          forceResetOn: row.forceResetOn,
+          role: row.role
         });
       }
     );
@@ -77,7 +81,7 @@ async function getUserByEmail(email) {
     const db = await database.fetch();
 
     db.get(
-      `SELECT rowid, email, name, surname, lastLogin, password FROM users WHERE email=$email`,
+      `SELECT rowid, email, name, surname, lastLogin, password, resetCode, forceResetOn, role FROM users WHERE email=$email`,
       { $email: email },
       (err, row) => {
         if (err) {
@@ -96,6 +100,9 @@ async function getUserByEmail(email) {
           surname: row.surname,
           lastLogin: row.lastLogin,
           password: row.password,
+          resetCode: row.resetCode,
+          forceResetOn: row.forceResetOn,
+          role: row.role
         });
       }
     );
@@ -116,7 +123,7 @@ async function createUser(data) {
   return new Promise(async (resolve, reject) => {
     const db = await database.fetch();
 
-    const sql = `INSERT INTO users (email, name, surname, password, forceResetOn, resetCode, lastLogin ) VALUES ($email, $name, $surname, $password, $forceResetOn, $resetCode, $lastLogin)`;
+    const sql = `INSERT INTO users (email, name, surname, password, forceResetOn, resetCode, lastLogin, role ) VALUES ($email, $name, $surname, $password, $forceResetOn, $resetCode, $lastLogin, $role)`;
     db.run(
       sql,
       {
@@ -127,6 +134,7 @@ async function createUser(data) {
         $forceResetOn: forceResetOn,
         $resetCode: resetCode,
         $lastLogin: lastLogin,
+        $role: data.role
       },
       async (err) => {
         if (err) {

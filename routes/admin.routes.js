@@ -1,12 +1,8 @@
 
 const express = require('express');
-const { nanoid } = require('nanoid');
-const bcrypt = require('bcrypt');
 const router = express.Router();
-const database = require('../helpers/database')();
-const emailService = require('../services/email/email.service');
 const adminService = require('../services/admin/admin.service');
-const { resetPassword } = require('../services/security/security.service');
+const jwt = require('jsonwebtoken');
 
 router.use('/', checkToken);
 router.post('/users', createUser);
@@ -16,7 +12,27 @@ router.put('/users/:id', updateUser);
 router.delete('/users/:id', deleteUser);
 
 async function checkToken(req, res, next) {
-    // check the JWT...
+    // check if json web token is valid...
+    var token = req.body.token || req.query.token || req.headers.authorization;
+
+    if (!token) {
+        return res.status(403).send({ message: `Per accedere alle API si richiede un token. Effettua il login di nuovo` });
+    }
+
+    if (token.substr(0, 6).toUpperCase() === 'BEARER') token = token.substr(7);
+
+    // Check of Javascript Web Token here. User must be logged in.
+    try {
+        const decoded = jwt.decode(token, process.env.JWT_SECRET);
+        if (decoded.sub.role !== 'ADMIN') {
+            return res.status(403).send({ message: `Unauthorized` });
+        }
+        req.user = decoded;
+    } catch (err) {
+        console.error(err);
+        return res.status(400).send({ error: "Error in JSON Web Token" });
+    }
+
     next();
 }
 

@@ -1,6 +1,7 @@
-import axios from "axios";
+import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { useEffect, useState } from "react";
+import { searchService } from '../services/search.service';
 
 const SelectedPartner = ({ selectedPartner, onClose, setLoading }) => {
 
@@ -16,10 +17,9 @@ const SelectedPartner = ({ selectedPartner, onClose, setLoading }) => {
 
         const fetchSelectedPartner = async () => {
 
-            // #TODO: Make the port an environment parameter
             try {
-                const response = await axios.get(`http://localhost:4000/api/query/${selectedPartner}`);
-                setPartner(response.data);
+                const response = await searchService.single(selectedPartner);
+                setPartner(response);
             } catch (err) {
                 console.error(err);
                 setState(s => ({ ...s, error: err }));

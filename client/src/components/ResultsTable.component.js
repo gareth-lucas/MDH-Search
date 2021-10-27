@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { FaStar, FaQuestionCircle } from "react-icons/fa";
 
 const ResultsTable = ({ results, onSelectResult }) => {
@@ -66,7 +66,6 @@ const ResultsTable = ({ results, onSelectResult }) => {
                 <tr
                   key={r.$.recordId}
                   onClick={(e) => {
-                    console.log(r.$.recordId);
                     onSelectResult(r.$.recordId);
                   }}
                 >
@@ -81,7 +80,7 @@ const ResultsTable = ({ results, onSelectResult }) => {
 
           {!results.Record && (
             <tr>
-              <td colSpan={2} className="text-center">
+              <td colSpan={5} className="text-center">
                 Nessun Risultato Trovato
               </td>
             </tr>

@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const PaginateTableFooter = (
     {
         columns,
@@ -8,7 +10,7 @@ export const PaginateTableFooter = (
         currentPage
     }) => {
 
-    var totalsRowMarkup = '';
+    var totalsRowMarkup = null;
 
     if (totalsColumns.length > 0) {
         const totalsRow = totalsColumns.reduce((totalsRow, tc) => {
@@ -46,13 +48,6 @@ export const PaginateTableFooter = (
     }
 
     return (
-        <tfoot>
-            {totalsRowMarkup}
-            <tr>
-                <th colSpan={columns.length} className="text-center">
-                    {buttons}
-                </th>
-            </tr>
-        </tfoot>
+        <tfoot>{totalsRowMarkup}<tr><th colSpan={columns.length} className="text-center">{buttons}</th></tr></tfoot>
     )
 }

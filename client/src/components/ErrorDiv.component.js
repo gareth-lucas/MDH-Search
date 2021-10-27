@@ -1,3 +1,4 @@
+import React from 'react';
 import { FaExclamationTriangle, FaTimes } from 'react-icons/fa';
 
 const ErrorDiv = ({ error, onClose }) => {

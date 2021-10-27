@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { nanoid } = require('nanoid');
 const adminService = require('../admin/admin.service');
 
 module.exports = {
@@ -23,17 +24,19 @@ async function login(username, inputPW) {
         return false;
     }
 
-    if (user.forceChangeOn < new Date()) {
-        return { passwordChange: true }
+    var pwChange = false;
+    if (user.forceResetOn < new Date() && user.forceResetOn !== null) {
+        const resetCode = nanoid(32);
+        await adminService.updateUser(user.rowid, { resetCode: resetCode });
+        pwChange = true;
     }
 
     // user/password are correct, Do login!
     var newUser = await adminService.updateUser(user.rowid, { lastLogin: new Date() });
-
     const token = jwt.sign({ sub: newUser }, process.env.JWT_SECRET);
 
     const { password, ...rest } = newUser;
-    return { user: rest, token: token }
+    return { user: rest, token: token, passwordChange: pwChange }
 }
 
 async function logout() {

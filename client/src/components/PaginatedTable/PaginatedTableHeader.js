@@ -1,3 +1,4 @@
+import React from 'react';
 import { FaAngleUp, FaAngleDown } from 'react-icons/fa';
 import { PaginatedTableColumnFilter } from './PaginatedTableColumnFilter';
 
