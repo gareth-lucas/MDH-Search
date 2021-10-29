@@ -59,7 +59,7 @@ const UserList = ({ onModify }) => {
     });
     const columns = ['surname', 'name', 'email', 'lastLogin', 'role', '_actions'];
     const columnTitles = ['Cognome', 'Nome', 'Email', 'Ultimo Login', 'Role', 'Actions'];
-    const rowsPerPage = 5;
+    const rowsPerPage = 15;
 
     return (
         <>

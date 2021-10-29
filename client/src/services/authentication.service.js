@@ -45,7 +45,6 @@ async function resetPassword(id) {
 }
 
 async function updateUser(data) {
-    const headers = authHeader();
     sessionStorage.setItem('currentUser', JSON.stringify(data))
     currentUserSubject.next(data)
     return data;

@@ -1,11 +1,16 @@
 import React from 'react';
-import { FaTimes } from "react-icons/fa";
+import { FaCheckSquare, FaTimes } from "react-icons/fa";
 import { useState } from "react";
 import OperationDropdown from "./OperationDropdown.component";
+import SavedSearchDropdown from './SavedSearchDropdown.component';
 import { searchService } from '../services/search.service';
+import { profileService } from '../services/profile.service';
 
-const SearchForm = ({ setResults, setState, setLoading }) => {
-  const [form, setForm] = useState({
+const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage }) => {
+
+  const initialForm = {
+    SAP_ID: "",
+    SAP_ID_OPERATION: "EQUALS",
     NAME1: "",
     NAME1_OPERATION: "EQUALS",
     NAME2: "",
@@ -20,10 +25,24 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
     POSTAL_CODE_OPERATION: "EQUALS",
     SEARCHTERM: "",
     SEARCHTERM_OPERATION: "EQUALS",
-  });
+    GOLDEN: 'Y',
+    QUARANTINE: 'N'
+  }
+
+  const [form, setForm] = useState(initialForm);
   const [formState, setFormState] = useState({
     error: null,
   });
+  const [description, setDescription] = useState('');
+  const [showField, setShowField] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(false);
+  const [savedSearchDropdownKey, setSavedSearchDropdownKey] = useState(new Date());
+
+  const updateDescription = e => {
+    const val = e.target.value;
+
+    setDescription(val);
+  }
 
   const onChangeTextField = (e) => {
     const field = e.target.name;
@@ -39,10 +58,54 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
     setForm((f) => ({ ...f, [field]: value }));
   };
 
+  const onChangeCheckbox = (e) => {
+    const checked = e.target.checked;
+    const name = e.target.name;
+
+    setForm((f) => ({ ...f, [name]: checked ? 'Y' : 'N' }));
+  }
+
   const resetField = (name) => {
     const operationField = `${name}_OPERATION`;
     setForm((f) => ({ ...f, [name]: "", [operationField]: "EQUALS" }));
   };
+
+  const setSavedSearch = (searchParams) => {
+    if (!searchParams) {
+      setForm(initialForm);
+      return;
+    }
+    const params = JSON.parse(searchParams.searchParams);
+    setForm(params);
+  }
+
+  const nameSavedSearch = () => {
+    setShowField(true);
+  }
+
+  const createSavedSearch = async () => {
+    if (description === '') {
+      setDescriptionError(true);
+      return;
+    }
+
+    const data = {
+      description: description,
+      idUser: currentUser.user.rowid,
+      searchParams: JSON.stringify(form)
+    }
+
+    try {
+      await profileService.createSavedSearch(currentUser.user.rowid, data);
+      setMessage(`Ricerca salvata correttamente`);
+      setDescription('');
+      setShowField(false);
+      setSavedSearchDropdownKey(new Date());
+    } catch (err) {
+      console.error(err);
+      setFormState({ error: err.response.data.message });
+    }
+  }
 
   const submitForm = async () => {
     const output = {};
@@ -56,6 +119,14 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
       "CIVIC_NUMBER",
       "CITY",
       "POSTAL_CODE",
+      "TITLE",
+      "SEARCHTERM",
+      "CITY",
+      "STATE",
+      "CREATIONDATE",
+      "CREATEDBY",
+      "MODIFYDATE",
+      "MODIFIEDBY"
     ];
 
     // sort fields
@@ -87,21 +158,20 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
       return;
     }
 
+    if (form.GOLDEN === 'N' && form.QUARANTINE === 'N') {
+      setState({ error: "Specificare Golden Record e/o Quarantena" })
+      return;
+    }
+
     // show loading spinner
     setLoading(true);
 
     // call backend with data
     try {
-      // #TODO manage javascript web token in Bearer header
-      // #TODO make the port an environment parameter
-      // const results = await axios.post(
-      //   "/api/query",
-      //   output
-      // );
       const results = await searchService.query(output);
 
       // pass results to parent component
-      setResults(results.RecordQueryResponse);
+      setResults(results);
     } catch (err) {
       // show the error on the form
       setFormState({ error: err.response.data.message });
@@ -118,7 +188,49 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
         {formState.error && (
           <div className="row text-danger">{formState.error}</div>
         )}
+        <div className="form-group row my-2">
+          <SavedSearchDropdown
+            key={savedSearchDropdownKey}
+            currentUser={currentUser}
+            setLoading={setLoading}
+            updateSavedSearch={setSavedSearch}
+          />
+        </div>
         <div className="form-group row">
+          <label htmlFor="SAP_ID" className="col-sm-3 col-form-label">
+            SAP ID
+          </label>
+          <div className="col-sm-2">
+            <OperationDropdown
+              name="SAP_ID_OPERATION"
+              value={form.SAP_ID_OPERATION}
+              onChange={(e) => onChangeSelectField(e)}
+              className="form-control"
+              fieldType="STRING"
+            />
+          </div>
+          <div className="col-sm-5">
+            <input
+              className="form-control"
+              type="text"
+              name="SAP_ID"
+              value={form.SAP_ID}
+              onChange={(e) => onChangeTextField(e)}
+              placeholder="SAP ID..."
+            />
+          </div>
+          <div className="col-sm-1">
+            <FaTimes
+              size={16}
+              style={{ cursor: "pointer" }}
+              color="#F00"
+              onClick={() => {
+                resetField("SAP_ID");
+              }}
+            />
+          </div>
+        </div>
+        <div className="form-group row pt-1">
           <label htmlFor="NAME2" className="col-sm-3 col-form-label">
             Cognome
           </label>
@@ -361,15 +473,48 @@ const SearchForm = ({ setResults, setState, setLoading }) => {
           </div>
         </div>
 
-        <div className="form-group pt-1">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            name="submit"
-            onClick={(e) => submitForm()}
-          >
-            Cerca
-          </button>
+        <div className="form-check mt-2">
+          <input type="checkbox" name="GOLDEN" value="G" className="form-check-input" checked={form.GOLDEN === 'Y' ? 'checked' : ''} onChange={e => onChangeCheckbox(e)} />
+          <label htmlFor="GOLDEN" className="form-check-label">Golden Records</label>
+        </div>
+
+
+        <div className="form-check">
+          <input type="checkbox" name="QUARANTINE" value="Q" className="form-check-input" checked={form.QUARANTINE === 'Y' ? 'checked' : ''} onChange={e => onChangeCheckbox(e)} />
+          <label htmlFor="QUARANTINE" className="form-check-label">Quarantena*</label>
+        </div>
+
+        <div>* Nella ricerca dei record in Quarantena, tutti i filtri funzionano in modalità "Inizia con"</div>
+
+        <div className="row pt-1">
+          <div className="col-sm-5">
+            <button
+              className="btn btn-primary mr-2"
+              name="submit"
+              onClick={(e) => submitForm()}
+            >
+              Cerca
+            </button>
+            <span> </span>
+            <button className="btn btn-outline-primary ml-2" onClick={() => nameSavedSearch()}>Salva Ricerca</button>
+          </div>
+          <div className="col-sm-6 col-offset-sm-1">
+            {showField &&
+              <>
+                <div className="row g-0">
+                  <div className="col">
+                    <input className="form-control col-sm-auto" style={{ width: "14rem" }} name="description" value={description} onChange={e => updateDescription(e)} type="text" placeholder="descrizione" />
+                  </div>
+                  <div className="col">
+                    <FaCheckSquare color="#198754" size={40} style={{ cursor: "pointer" }} onClick={() => createSavedSearch()} />
+                  </div>
+                </div>
+                {descriptionError &&
+                  <div className="row"><div className="col text-danger">La descrizione non può essere blank</div></div>
+                }
+              </>
+            }
+          </div>
         </div>
       </div>
     </div>

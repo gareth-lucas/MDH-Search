@@ -30,22 +30,26 @@ export const PaginateTableFooter = (
         })}</tr>;
     }
 
-    var buttons = [];
-
-
 
     const totalPages = Math.ceil(dataItems.length / rowsPerPage);
+    if (!currentPage) currentPage = 1;
 
-    if (totalPages > 1) {
-        if (currentPage < 1) currentPage = 1;
-        if (currentPage > totalPages) currentPage = totalPages;
-
-        const pagesArray = [1, currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2, totalPages].filter(p => (p > 0 || p <= totalPages));
-
-        for (var x = 0; x < pagesArray.length; x++) {
-            buttons.push(<button key={x} className="btn btn-secondary mx-1" name={`page_${pagesArray[x]}`} onClick={(e) => setCurrentPage(e)}>{pagesArray[x]}</button>)
-        }
+    if (totalPages <= 1) {
+        return <tfoot>{totalsRowMarkup}</tfoot>
     }
+
+    if (currentPage < 1) currentPage = 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const pagesArray = [1, currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2, totalPages].filter((p, i, s) => {
+        return ((p > 0 && p <= totalPages) && s.indexOf(p) === i)
+    });
+
+    const buttons = pagesArray.map(p => {
+        const className = (p === currentPage) ? "btn btn-primary mx-1" : "btn btn-secondary mx-1";
+        return <button key={p} className={className} onClick={() => setCurrentPage(p)}>{p}</button>
+    });
+
 
     return (
         <tfoot>{totalsRowMarkup}<tr><th colSpan={columns.length} className="text-center">{buttons}</th></tr></tfoot>

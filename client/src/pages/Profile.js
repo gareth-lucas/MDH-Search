@@ -4,7 +4,7 @@ import SavedSearches from '../components/SavedSearches.component';
 
 const Profile = ({ currentUser, ...props }) => {
 
-    const [error, setError] = useState(null);
+    const [updateTable, setUpdateTable] = useState(new Date());
 
     return (
         <>
@@ -17,7 +17,7 @@ const Profile = ({ currentUser, ...props }) => {
                     </div>
 
                     <div className="col-sm-6">
-                        <SavedSearches currentUser={currentUser} />
+                        <SavedSearches key={updateTable} currentUser={currentUser} setUpdateTable={setUpdateTable} />
                     </div>
                 </div>
             </div>

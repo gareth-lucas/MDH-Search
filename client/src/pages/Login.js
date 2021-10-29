@@ -36,6 +36,10 @@ const Login = (props) => {
     }
   };
 
+  if (currentUser) {
+    return null;
+  }
+
   return (
     <div className="container">
       <div className="row justify-content-center">

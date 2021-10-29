@@ -3,7 +3,7 @@ import { FaTimes } from 'react-icons/fa';
 import { useEffect, useState } from "react";
 import { searchService } from '../services/search.service';
 
-const SelectedPartner = ({ selectedPartner, onClose, setLoading }) => {
+const SelectedPartner = ({ origin, selectedPartner, onClose, setLoading }) => {
 
     const [state, setState] = useState({
         loading: true,
@@ -17,16 +17,59 @@ const SelectedPartner = ({ selectedPartner, onClose, setLoading }) => {
 
         const fetchSelectedPartner = async () => {
 
-            try {
-                const response = await searchService.single(selectedPartner);
-                setPartner(response);
-            } catch (err) {
-                console.error(err);
-                setState(s => ({ ...s, error: err }));
-            } finally {
+            const origin = selectedPartner.origin;
+
+            if (origin === 'GR') {
+                try {
+                    const response = await searchService.single(selectedPartner.recordId);
+                    console.log(response);
+                    setPartner(response);
+                } catch (err) {
+                    console.error(err);
+                    setState(s => ({ ...s, error: err }));
+                } finally {
+                    setLoading(false);
+                    setState(s => ({ ...s, loading: false }))
+                }
+            } else if (origin === 'Q') {
+                try {
+                    const response = await searchService.fetchDuplicates(selectedPartner);
+                    console.log(response);
+                    if (response.MatchResult && !Array.isArray(response.MatchResult)) {
+                        response.MatchResult = [response.MatchResult];
+                    }
+
+                    const duplicateInfo = response.MatchResult.filter(m => (m.duplicate)).map(m => {
+                        return {
+                            recordId: m.duplicate.bupa.id,
+                            sap_id: m.duplicate.bupa.sap_id,
+                            name1: m.duplicate.bupa.name1,
+                            name2: m.duplicate.bupa.name2,
+                            address: {
+                                city: m.duplicate.bupa.address.city,
+                                state: m.duplicate.bupa.address.state,
+                                street: m.duplicate.bupa.address.street,
+                                postalCode: m.duplicate.bupa.address.postal_code,
+                                civicNumber: m.duplicate.bupa.address.civic_number,
+                                country: m.duplicate.bupa.address.country
+                            }
+                        }
+                    })
+
+                    setPartner(s => ({ ...s, ...selectedPartner, duplicateInfo: duplicateInfo }));
+                } catch (err) {
+                    console.error(err);
+                    setState(s => ({ ...s, error: err.response.data.message }));
+                } finally {
+                    setLoading(false);
+                    setState(s => ({ ...setState, loading: false }));
+                }
+            } else {
+                console.error(`Unknown record origin`);
+                setState(s => ({ ...s, error: `Unknown record origin`, loading: false }));
                 setLoading(false);
-                setState(s => ({ ...s, loading: false }))
             }
+
         }
 
         if (selectedPartner) {
@@ -36,7 +79,7 @@ const SelectedPartner = ({ selectedPartner, onClose, setLoading }) => {
         } else {
             setPartner(null);
         }
-    }, [selectedPartner, setLoading]);
+    }, [selectedPartner, origin, setLoading]);
 
     if (state.loading) {
         return null;
@@ -64,20 +107,52 @@ const SelectedPartner = ({ selectedPartner, onClose, setLoading }) => {
                     onClick={e => onClose()}>
                     <FaTimes size={24} color="#F00" />
                 </div>
-                <h2>{partner.bupa.sap_id} - {partner.bupa.name2} {partner.bupa.name1}</h2>
+                {selectedPartner.origin === 'GR' &&
+                    <>
+                        <h2>{partner.bupa.sap_id} - {partner.bupa.name2} {partner.bupa.name1}</h2>
 
-                <ul className="list-group list-group-flush">
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>SAP ID:</span><span>{partner.bupa.sap_id}</span></li>
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Cognome:</span><span>{partner.bupa.name2}</span></li>
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Nome:</span><span>{partner.bupa.name1}</span></li>
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Search Term:</span><span>{partner.bupa.searchterm}</span></li>
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Titolo:</span><span>{partner.bupa.title}</span></li>
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Nome Esteso:</span><span>{partner.bupa.fullname}</span></li>
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Creato:</span><span>{partner.bupa.created_date}</span></li>
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Creato Da:</span><span>{partner.bupa.createdby}</span></li>
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Ultima Modifica:</span><span>{partner.bupa.last_modified_date}</span></li>
-                    <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Modificato Da:</span><span>{partner.bupa.modifiedby}</span></li>
-                </ul>
+                        <ul className="list-group list-group-flush">
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>SAP ID:</span><span>{partner.bupa.sap_id}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Cognome:</span><span>{partner.bupa.name2}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Nome:</span><span>{partner.bupa.name1}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Search Term:</span><span>{partner.bupa.searchterm}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Titolo:</span><span>{partner.bupa.title}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Nome Esteso:</span><span>{partner.bupa.fullname}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Creato:</span><span>{partner.bupa.created_date}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Creato Da:</span><span>{partner.bupa.createdby}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Ultima Modifica:</span><span>{partner.bupa.last_modified_date}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Modificato Da:</span><span>{partner.bupa.modifiedby}</span></li>
+                        </ul>
+                    </>
+                }
+                {selectedPartner.origin === 'Q' &&
+                    <>
+                        <h2>Quarantena - {selectedPartner.sap_id} - {selectedPartner.name2} {selectedPartner.name1}</h2>
+
+                        <ul className="list-group list-group-flush">
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>SAP ID:</span><span>{selectedPartner.sap_id}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Cognome:</span><span>{selectedPartner.name2}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Nome:</span><span>{selectedPartner.name1}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Transaction ID:</span><span>{selectedPartner.recordId}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Creato:</span><span>{new Date(selectedPartner.createdDate).toLocaleString('it-CH')}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Modificato:</span><span>{selectedPartner.updateDate}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Causa Quarantena:</span><span>{selectedPartner.cause}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Motivo:</span><span>{selectedPartner.reason}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Risoluzione:</span><span>{selectedPartner.resolution}</span></li>
+                        </ul>
+
+                        {partner.duplicateInfo &&
+                            <>
+                                <h4>Duplicati Potenziali</h4>
+                                <ul>
+                                    {partner.duplicateInfo.map(d => {
+                                        return <li key={d.sap_id}>SAP ID: {d.sap_id} - {d.name2} {d.name1}</li>
+                                    })}
+                                </ul>
+                            </>
+                        }
+                    </>
+                }
 
             </div>
         </>

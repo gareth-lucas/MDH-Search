@@ -10,6 +10,7 @@ router.get('/:id([0-9]+)', getProfileById);
 router.get('/:id([0-9]+)/resetPassword', resetPasswordRequest);
 router.put('/:id([0-9]+)', updateProfile);
 router.get('/:id([0-9]+)/searches', getSavedSearchesByUser);
+router.post('/:id([0-9]+)/searches', createSavedSearch);
 router.get('/:id([0-9]+)/searches/:idSearch([0-9]+)', getSavedSearchById);
 router.delete('/:id([0-9]+)/searches/:idSearch([0-9]+)', deleteSavedSearchById);
 
@@ -120,6 +121,23 @@ async function getSavedSearchesByUser(req, res, next) {
     }
 }
 
+async function createSavedSearch(req, res, next) {
+    // users may only get their own data
+
+    if (req.user.sub.rowid.toString() !== req.params.id) {
+        return res.status(403).send({ message: `Unauthorized` });
+    }
+
+    try {
+        console.log(req.body);
+        const search = await profileService.createSavedSearch(req.params.id, req.body);
+        res.send(search);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+}
+
 async function getSavedSearchById(req, res, next) {
     try {
         return res.status(400).send({ message: "Not yet implemented" });
@@ -130,8 +148,15 @@ async function getSavedSearchById(req, res, next) {
 }
 
 async function deleteSavedSearchById(req, res, next) {
+    // users may only get their own data
+
+    if (req.user.sub.rowid.toString() !== req.params.id) {
+        return res.status(403).send({ message: `Unauthorized` });
+    }
+
     try {
-        return res.status(400).send({ message: "Not yet implemented" });
+        await profileService.deleteSavedSearch(req.params.idSearch);
+        res.send();
     } catch (err) {
         console.error(err);
         next(err);

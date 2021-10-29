@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
-import { FaStar, FaQuestionCircle } from "react-icons/fa";
+import { FaStar, FaQuestionCircle, FaTemperatureHigh } from "react-icons/fa";
 
 const ResultsTable = ({ results, onSelectResult }) => {
   // listen to the results prop and render on change
   useEffect(() => {
-    // if only one Record is returned, make it an array so it's easier to handle later
-    if (results.Record && !Array.isArray(results.Record)) {
-      results.Record = [results.Record];
-    }
+
   }, [results]);
 
   const createAddress = (address) => {
+    if (!address || address[0] === null) {
+      return <div style={{ borderBottom: "1px solid #EEE" }}>Unknown</div>
+    }
+
     // if address is not an array, turn it into one
     if (!Array.isArray(address)) {
       address = [address];
@@ -35,8 +36,10 @@ const ResultsTable = ({ results, onSelectResult }) => {
   // #TODO: Need to manage quarantined records, changed records.
   const getStatus = (status) => {
     switch (status) {
-      case "GoldenRecord":
+      case "GR":
         return <FaStar color="#FFD700" size={16} title="Golden Record" />;
+      case "Q":
+        return <FaTemperatureHigh color="#DC3545" size={16} title="Quarantena" />
       default:
         return <FaQuestionCircle color="#F00" size={16} title="Unknown" />;
     }
@@ -45,6 +48,7 @@ const ResultsTable = ({ results, onSelectResult }) => {
   return (
     <div className="col-sm-6 pt-3">
       <h2>Tabella Risultati</h2>
+      {results.records?.length > 0 && <div>Totale: {results.totalRecords}, Visualizzati: {results.totalResults} {results.totalResults < results.totalRecords && ' - raffinare i parametri di ricerca'}</div>}
 
       <table className="table">
         <thead>
@@ -57,28 +61,26 @@ const ResultsTable = ({ results, onSelectResult }) => {
           </tr>
         </thead>
         <tbody>
-          {results.Record &&
-            results.Record.length &&
-            results.Record.map((r) => {
-              const fields = r.Fields.bupa;
+          {results.records?.length > 0 &&
+            results.records.map((r) => {
 
               return (
                 <tr
-                  key={r.$.recordId}
+                  key={r.recordId}
                   onClick={(e) => {
-                    onSelectResult(r.$.recordId);
+                    onSelectResult(r);
                   }}
                 >
-                  <td>{fields.sap_id}</td>
-                  <td>{fields.name2}</td>
-                  <td>{fields.name1}</td>
-                  <td>{createAddress(fields.address)}</td>
-                  <td>{getStatus(results.$.origin)}</td>
+                  <td>{r.sap_id}</td>
+                  <td>{r.name2}</td>
+                  <td>{r.name1}</td>
+                  <td>{createAddress(r.addresses)}</td>
+                  <td>{getStatus(r.origin)}</td>
                 </tr>
               );
             })}
 
-          {!results.Record && (
+          {!results.records?.length > 0 && (
             <tr>
               <td colSpan={5} className="text-center">
                 Nessun Risultato Trovato

@@ -4,7 +4,9 @@ import { authHeader } from "../helpers/authHeader";
 export const profileService = {
     getProfileById,
     updateProfile,
-    getSavedSearchesByUser
+    getSavedSearchesByUser,
+    createSavedSearch,
+    deleteSearch
 }
 
 async function getProfileById(id) {
@@ -23,9 +25,23 @@ async function updateProfile(id, data) {
     return user.data;
 }
 
-async function getSavedSearchesByUser(id) {
+async function getSavedSearchesByUser(id, limit = 0) {
     const headers = authHeader();
-    const searches = await axios.get(`/profile/${id}/searches`, { headers: headers });
+    const searches = await axios.get(`/profile/${id}/searches?limit=${limit}`, { headers: headers });
 
     return searches.data;
+}
+
+async function createSavedSearch(id, data) {
+    const headers = authHeader();
+    const search = await axios.post(`/profile/${id}/searches`, data, { headers: headers });
+
+    return search.data;
+}
+
+async function deleteSearch(id, idSearch) {
+    const headers = authHeader();
+    await axios.delete(`/profile/${id}/searches/${idSearch}`, { headers: headers });
+
+    return;
 }

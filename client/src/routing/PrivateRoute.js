@@ -18,7 +18,7 @@ const PrivateRoute = ({
     <Route
       {...rest}
       render={(props) =>
-        !currentUser?.token && !loading ? (
+        !currentUser ? (
           <Redirect to="/login" />
         ) : currentUser.passwordChange ?
           <Redirect to="/passwordReset" />

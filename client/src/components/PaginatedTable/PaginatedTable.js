@@ -60,10 +60,8 @@ export default function PaginatedTable(
         return <div className="text-danger">Display Columns and Column Titles must be the same length!</div>
     }
 
-    const changeCurrentPage = (e) => {
-        e.preventDefault();
-        const page = e.target.name.split("_").pop();
-        setCurrentPage(page);
+    const changeCurrentPage = (p) => {
+        setCurrentPage(p);
     }
 
     const handleFilter = (name, value) => {
@@ -124,6 +122,7 @@ export default function PaginatedTable(
                     totalsColumns={totalsColumns}
                     dataItems={viewData}
                     rowsPerPage={rowsPerPage}
+                    currentPage={currentPage}
                     setCurrentPage={changeCurrentPage}
                 />
             </table>
