@@ -25,6 +25,8 @@ const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage 
     POSTAL_CODE_OPERATION: "EQUALS",
     SEARCHTERM: "",
     SEARCHTERM_OPERATION: "EQUALS",
+    BIRTHDATE: "",
+    BIRTHDATE_OPERATION: "EQUALS",
     GOLDEN: 'Y',
     QUARANTINE: 'N'
   }
@@ -468,6 +470,40 @@ const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage 
               color="#F00"
               onClick={() => {
                 resetField("EMAIL");
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="form-group row pt-1">
+          <label htmlFor="BIRTHDATE" className="col-sm-3 col-form-label">
+            Data di Nascita
+          </label>
+          <div className="col-sm-2">
+            <OperationDropdown
+              name="BIRTHDATE_OPERATION"
+              value={form.EMAIL_OPERATION}
+              onChange={(e) => onChangeSelectField(e)}
+              className="form-control"
+              fieldType="DATE"
+            />
+          </div>
+          <div className="col-sm-5">
+            <input
+              className="form-control"
+              type="date"
+              name="BIRTHDATE"
+              value={form.BIRTHDATE}
+              onChange={(e) => onChangeTextField(e)}
+            />
+          </div>
+          <div className="col-sm-1">
+            <FaTimes
+              size={16}
+              style={{ cursor: "pointer" }}
+              color="#F00"
+              onClick={() => {
+                resetField("BIRTHDATE");
               }}
             />
           </div>

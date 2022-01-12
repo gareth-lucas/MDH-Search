@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { FaStar, FaQuestionCircle, FaTemperatureHigh } from "react-icons/fa";
+import { PaginatedTable } from "./PaginatedTable";
 
 const ResultsTable = ({ results, onSelectResult }) => {
   // listen to the results prop and render on change
   useEffect(() => {
-
+    console.log("RESULTS", results);
   }, [results]);
 
   const createAddress = (address) => {
@@ -44,6 +45,47 @@ const ResultsTable = ({ results, onSelectResult }) => {
         return <FaQuestionCircle color="#F00" size={16} title="Unknown" />;
     }
   };
+
+
+  var tableResults = [];
+  if (results.records) {
+    tableResults = results.records.map(r => ({
+      id: r.sap_id,
+      name2: r.name2,
+      name1: r.name1,
+      address: createAddress(r.addresses),
+      origin: getStatus(r.origin),
+      _actions: [
+        {
+          name: 'apri',
+          onClick: e => { onSelectResult(r) }
+        }
+      ]
+    }));
+  }
+
+  console.log(tableResults);
+
+  const columns = ['id', 'name2', 'name1', 'address', 'origin', '_actions'];
+  const columnNames = ['SAP ID', 'Cognome', 'Nome', 'Indirizzo', 'Stato', 'Azioni'];
+  // const orderableColumns = ['id', 'name2', 'name1', 'origin'];
+
+  return (
+    <div className="col-sm-6 pt-3">
+      <h2>Tabella Risultati</h2>
+      {results.records?.length > 0 && <div>Totale: {results.totalRecords}, Visualizzati: {results.totalResults} {results.totalResults < results.totalRecords && ' - raffinare i parametri di ricerca'}</div>}
+
+      <PaginatedTable
+        data={tableResults}
+        columns={columns}
+        columnTitles={columnNames}
+        // sortableColumns={orderableColumns}
+        rowsPerPage={10}
+      />
+
+    </div>
+  )
+
 
   return (
     <div className="col-sm-6 pt-3">
