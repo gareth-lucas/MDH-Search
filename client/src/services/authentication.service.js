@@ -14,7 +14,6 @@ export const authenticationService = {
 }
 
 async function login(username, password) {
-    console.log(username, password);
     if (username === "" || password === "") {
         return "Devono essere compilati tutti i campi"
     } else {
