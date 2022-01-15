@@ -25,7 +25,6 @@ async function single(selectedPartner) {
     const headers = authHeader();
 
     const result = await axios.get(`http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}/api/query/${selectedPartner}`, { headers: headers });
-
     return result.data
 }
 

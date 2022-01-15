@@ -6,6 +6,7 @@ const apiRoutes = require('./routes/api.routes');
 const securityRoutes = require('./routes/security.routes');
 const adminRoutes = require('./routes/admin.routes');
 const profileRoutes = require('./routes/profile.routes');
+const { path } = require('express/lib/application');
 
 const app = express()
 app.use(express.json());

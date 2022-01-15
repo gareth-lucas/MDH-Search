@@ -33,7 +33,6 @@ const ResultsTable = ({ results, onSelectResult }) => {
   };
 
   // show record status
-  // #TODO: Need to manage quarantined records, changed records.
   const getStatus = (status) => {
     switch (status) {
       case "GR":
@@ -65,7 +64,6 @@ const ResultsTable = ({ results, onSelectResult }) => {
 
   const columns = ['id', 'name2', 'name1', 'address', 'origin', '_actions'];
   const columnNames = ['SAP ID', 'Cognome', 'Nome', 'Indirizzo', 'Stato', 'Azioni'];
-  // const orderableColumns = ['id', 'name2', 'name1', 'origin'];
 
   return (
     <div className="col-sm-6 pt-3">
@@ -76,60 +74,11 @@ const ResultsTable = ({ results, onSelectResult }) => {
         data={tableResults}
         columns={columns}
         columnTitles={columnNames}
-        // sortableColumns={orderableColumns}
         rowsPerPage={10}
       />
 
     </div>
   )
-
-
-  return (
-    <div className="col-sm-6 pt-3">
-      <h2>Tabella Risultati</h2>
-      {results.records?.length > 0 && <div>Totale: {results.totalRecords}, Visualizzati: {results.totalResults} {results.totalResults < results.totalRecords && ' - raffinare i parametri di ricerca'}</div>}
-
-      <table className="table">
-        <thead>
-          <tr>
-            <th>SAP ID</th>
-            <th>Cognome</th>
-            <th>Nome</th>
-            <th>Indirizzo</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {results.records?.length > 0 &&
-            results.records.map((r) => {
-
-              return (
-                <tr
-                  key={r.recordId}
-                  onClick={(e) => {
-                    onSelectResult(r);
-                  }}
-                >
-                  <td>{r.sap_id}</td>
-                  <td>{r.name2}</td>
-                  <td>{r.name1}</td>
-                  <td>{createAddress(r.addresses)}</td>
-                  <td>{getStatus(r.origin)}</td>
-                </tr>
-              );
-            })}
-
-          {!results.records?.length > 0 && (
-            <tr>
-              <td colSpan={5} className="text-center">
-                Nessun Risultato Trovato
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
 };
 
 export default ResultsTable;

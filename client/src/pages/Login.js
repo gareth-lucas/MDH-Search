@@ -20,6 +20,12 @@ const Login = (props) => {
 
   const onChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
 
+  const checkEnter = (e) => {
+    if (e.key === 'Enter') { //has enter been pressed?
+      onSubmit();
+    }
+  }
+
   const onSubmit = async () => {
     try {
       const loginResult = await authenticationService.login(user.email, user.password);
@@ -41,7 +47,7 @@ const Login = (props) => {
   return (
     <div className="container">
       <div className="row justify-content-center">
-        <div className="col-sm-3 text-center p-2 mt-3 ses-border ses-bg-secondary" style={{ borderRadius: "15px" }}>
+        <div className="col-sm-3 text-center p-2 mt-3 ses-border ses-bg-secondary" style={{ borderRadius: "15px" }} onKeyPress={e => checkEnter(e)}>
           <h1>
             Account <span className="ses-primary">Login</span>
           </h1>
@@ -71,12 +77,7 @@ const Login = (props) => {
               required
             />
           </div>
-          <input
-            type="submit"
-            value="Login"
-            className="btn btn-primary mt-2"
-            onClick={() => onSubmit()}
-          />
+          <input type="submit" value="Login" className="btn btn-primary mt-2" onClick={() => onSubmit()} />
           <div>
             <Link to="/resetPassword">password dimenticata?</Link>
           </div>

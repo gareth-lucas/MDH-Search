@@ -14,10 +14,8 @@ const Search = ({
   const [selectedPartner, setSelectedPartner] = useState(null);
   const [message, setMessage] = useState(null);
 
-
-  const doSetSelectedPartner = (record) => {
-    setSelectedPartner(null);
-    setSelectedPartner(record);
+  const doSetSelectedPartner = (p) => {
+    setSelectedPartner(p);
   }
 
   return (
@@ -36,7 +34,6 @@ const Search = ({
       {selectedPartner && (
         <SelectedPartner
           selectedPartner={selectedPartner}
-          onClose={() => setSelectedPartner(null)}
           setLoading={setLoading}
         />
       )}

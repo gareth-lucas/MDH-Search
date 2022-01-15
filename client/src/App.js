@@ -13,6 +13,7 @@ import ResetPassword from "./pages/ResetPassword";
 import PasswordReset from "./pages/PasswordReset";
 import PrivateRoute from "./routing/PrivateRoute";
 import { authenticationService } from "./services/authentication.service";
+import ErrorBoundary from './components/ErrorBoundary.class';
 
 const App = () => {
 
@@ -41,69 +42,17 @@ const App = () => {
       <NavBar
         currentUser={currentUser}
       />
-      <Switch>
-        <Route
-          exact
-          path="/"
-          render={(props) => (
-            <Redirect to="/login" />
-          )}
-        />
-        <PrivateRoute
-          exact
-          path="/search"
-          component={Search}
-          currentUser={currentUser}
-          loading={loading}
-          setState={setState}
-          setLoading={setLoading}
-        />
-        <PrivateRoute
-          exact
-          path="/admin"
-          component={Administration}
-          currentUser={currentUser}
-        />
-        <PrivateRoute
-          exact
-          path="/profile"
-          component={Profile}
-          currentUser={currentUser}
-        />
-        <Route
-          exact
-          path="/login"
-          render={(props) => (
-            <Login
-              {...props}
-              setCurrentUser={setCurrentUser}
-              currentUser={currentUser}
-            />
-          )}
-        />
-
-        <Route
-          exact
-          path="/resetPassword"
-          render={(props) => (
-            <ResetPassword
-              {...props}
-              currentUser={currentUser}
-            />
-          )}
-        />
-
-        <Route
-          exact
-          path="/passwordReset"
-          render={(props) => (
-            <PasswordReset
-              {...props}
-              currentUser={currentUser}
-            />
-          )}
-        />
-      </Switch>
+      <ErrorBoundary>
+        <Switch>
+          <Route exact path="/" render={(props) => (<Redirect to="/login" />)} />
+          <PrivateRoute exact path="/search" component={Search} currentUser={currentUser} setState={setState} setLoading={setLoading} />
+          <PrivateRoute exact path="/admin" component={Administration} currentUser={currentUser} />
+          <PrivateRoute exact path="/profile" component={Profile} currentUser={currentUser} />
+          <Route exact path="/login" render={(props) => (<Login {...props} setCurrentUser={setCurrentUser} currentUser={currentUser} />)} />
+          <Route exact path="/resetPassword" render={(props) => (<ResetPassword {...props} currentUser={currentUser} />)} />
+          <Route exact path="/passwordReset" render={(props) => (<PasswordReset {...props} currentUser={currentUser} />)} />
+        </Switch>
+      </ErrorBoundary>
     </>
   );
 };
