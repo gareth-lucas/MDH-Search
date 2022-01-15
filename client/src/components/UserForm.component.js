@@ -41,6 +41,17 @@ const UserForm = ({ selectedUser, onHide, onUserCreate }) => {
     const doSave = async () => {
         const { name, surname, email, role } = form;
 
+        if (name.trim() === '' || surname.trim() === '' || email.trim() === '' || role.trim() === '') {
+            console.log("Fields not filled")
+            setError({ general: `Compilare tutti i campi` });
+            return;
+        }
+
+        if (!email.match(/^[\w.]+@\w+\.\w+$/)) {
+            setError({ general: `Indirizzo email non valido` });
+            return;
+        }
+
         try {
             var user;
             if (!selectedUser) {
@@ -66,7 +77,7 @@ const UserForm = ({ selectedUser, onHide, onUserCreate }) => {
                     <h3>{selectedUser ? 'Modificare Utente' : 'Creare Nuovo Utente'}</h3>
 
                     {error.general &&
-                        <div className="text-danger">{error}</div>
+                        <div className="text-danger">{error.general}</div>
                     }
 
                     <div className="form">
