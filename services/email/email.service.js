@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const transporter = nodemailer.createTransport({
+const transporterOptions = {
     host: process.env.EMAIL_SERVER,
     port: process.env.EMAIL_PORT,
     secure: false, // true for 465, false for other ports
@@ -8,7 +8,9 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER, // generated ethereal user
         pass: process.env.EMAIL_PASSWORD, // generated ethereal password
     },
-});
+}
+
+const transporter = nodemailer.createTransport(transporterOptions);
 
 module.exports = {
     sendMail

@@ -22,7 +22,6 @@ const SelectedPartner = ({ origin, selectedPartner, onClose, setLoading }) => {
             if (origin === 'GR') {
                 try {
                     const response = await searchService.single(selectedPartner.recordId);
-                    console.log(response);
                     setPartner(response);
                 } catch (err) {
                     console.error(err);
@@ -34,7 +33,6 @@ const SelectedPartner = ({ origin, selectedPartner, onClose, setLoading }) => {
             } else if (origin === 'Q') {
                 try {
                     const response = await searchService.fetchDuplicates(selectedPartner);
-                    console.log(response);
                     if (response.MatchResult && !Array.isArray(response.MatchResult)) {
                         response.MatchResult = [response.MatchResult];
                     }

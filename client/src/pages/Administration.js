@@ -9,7 +9,6 @@ const Administration = () => {
   const [mountKey, setMountKey] = useState(new Date());
 
   const onModify = (user) => {
-    console.log(user);
     setSelectedUser(user);
     setShowForm(true);
   }

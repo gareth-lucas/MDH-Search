@@ -49,7 +49,6 @@ const PasswordReset = ({ currentUser, ...props }) => {
 
     useEffect(() => {
         const showCurrentUser = () => {
-            console.log("currentUser is a ", typeof currentUser);
         }
 
         showCurrentUser();
@@ -81,13 +80,14 @@ const PasswordReset = ({ currentUser, ...props }) => {
         }
 
         try {
-            await axios.post('/security/changePassword', data);
+            //await axios.post('/security/changePassword', data);
+            await authenticationService.changePassword(data);
             await authenticationService.logout();
             setMessage(<span>La tua password è stata modificata.<br /> <Link to="/login">Vai alla pagina login</Link></span>);
             setShow(false);
 
         } catch (err) {
-            console.log(err);
+            console.error(err);
             setError(err.response.data.message);
         }
     }

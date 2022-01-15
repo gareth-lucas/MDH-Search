@@ -59,7 +59,6 @@ async function getProfileById(req, res, next) {
 
 async function resetPasswordRequest(req, res, next) {
     // users may only get their own data
-
     if (req.user.sub.rowid.toString() !== req.params.id) {
         return res.status(403).send({ message: `Unauthorized` });
     }
@@ -129,7 +128,6 @@ async function createSavedSearch(req, res, next) {
     }
 
     try {
-        console.log(req.body);
         const search = await profileService.createSavedSearch(req.params.id, req.body);
         res.send(search);
     } catch (err) {

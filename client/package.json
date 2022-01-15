@@ -18,7 +18,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "export HTTPS=true&&export HOST=mdhsearch.sharptime.com&&export PORT=443&&SSL_CERT_FILE=/var/www/node-cert.crt&&SSL_KEY_FILE=/var/www/node-cert.key&&react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

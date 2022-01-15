@@ -7,6 +7,8 @@ const currentUserSubject = new BehaviorSubject(JSON.parse(sessionStorage.getItem
 export const authenticationService = {
     login,
     resetPassword,
+    changePassword,
+    forgottenPassword,
     updateUser,
     logout,
     currentUser: currentUserSubject.asObservable(),
@@ -18,7 +20,7 @@ async function login(username, password) {
         return "Devono essere compilati tutti i campi"
     } else {
         try {
-            const loginResult = await axios.post("/security/login", {
+            const loginResult = await axios.post(`http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}/security/login`, {
                 email: username,
                 password: password,
             });
@@ -37,10 +39,23 @@ async function login(username, password) {
 
 async function resetPassword(id) {
     const headers = authHeader();
-    const profile = await axios.get(`/profile/${id}/resetPassword`, { headers: headers });
+    const profile = await axios.get(`http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}/profile/${id}/resetPassword`, { headers: headers });
     sessionStorage.setItem('currentUser', JSON.stringify(profile.data))
     currentUserSubject.next(profile.data)
     return profile.data;
+}
+
+async function changePassword(data) {
+    const headers = authHeader();
+    const user = await axios.post(`http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}/security/changePassword`, data, { headers: headers });
+    return user.data;
+}
+
+async function forgottenPassword(email) {
+    const headers = authHeader();
+    const response = await axios.post(`http://${process.env.REACT_APP_API_SERVER}:${process.env.REACT_APP_API_PORT}/security/resetPassword`, { email: email }, { headers: headers });
+
+    return response.data
 }
 
 async function updateUser(data) {

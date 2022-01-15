@@ -1,5 +1,5 @@
-import axios from "axios";
 import React, { useState } from "react";
+import { authenticationService } from "../services/authentication.service";
 const ResetPassword = (props) => {
 
     const [error, setError] = useState(null);
@@ -18,8 +18,8 @@ const ResetPassword = (props) => {
         }
 
         try {
-            await axios.post(`/security/resetPassword`, { email: email });
-            setMessage('Una mail è stata mandata all\'indirizzo indicato');
+            await authenticationService.forgottenPassword(email);
+            setMessage('Un\'email è stata mandata all\'indirizzo indicato');
         } catch (err) {
             console.error(err);
             setMessage(err);

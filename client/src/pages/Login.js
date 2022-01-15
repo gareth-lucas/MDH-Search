@@ -24,8 +24,6 @@ const Login = (props) => {
     try {
       const loginResult = await authenticationService.login(user.email, user.password);
 
-      console.log("loginResult", loginResult);
-
       if (loginResult.passwordChange) {
         props.history.push(`/passwordReset?email=${encodeURI(loginResult.user.email)}`);
         return;

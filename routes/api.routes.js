@@ -82,9 +82,6 @@ async function query(req, res, next) {
         if (!!Q.QuarantineEntry[0]) {
             normalQ = Q.QuarantineEntry.map(r => {
                 const fields = r.entity.bupa;
-                if (fields.sap_id === '2090102208') {
-                    console.log(r);
-                }
                 return {
                     name1: fields.name1,
                     name2: fields.name2,
@@ -253,8 +250,6 @@ async function fetchById(req, res, next) {
 
 async function fetchPotentialDuplicates(req, res, next) {
 
-    console.log(req.body);
-
     const host = process.env.MDH_HOST;
     const username = process.env.MDH_USER;
     const universeId = process.env.MDH_UNIVERSE_ID;
@@ -284,8 +279,6 @@ async function fetchPotentialDuplicates(req, res, next) {
     </bupa>
 </batch>`
 
-    console.log(request);
-
     // Call API
     const data = await axios.post(url, request, requestOptions).then(response => {
         return response.data;
@@ -301,8 +294,6 @@ async function fetchPotentialDuplicates(req, res, next) {
         console.error(err.data);
         return res.status(400).send(err);
     });
-
-    console.log(parsedData.MatchEntitiesResponse.MatchResult);
 
     // Send Response
     res.send(parsedData.MatchEntitiesResponse);

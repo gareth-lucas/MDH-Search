@@ -13,19 +13,16 @@ module.exports = {
 async function login(username, inputPW) {
     const user = await adminService.getUserByEmail(username);
     if (!user) {
-        console.log(`User ${username} not found`);
         return false;
     }
 
     if (user.role === 'DELETED') {
-        console.log(`User ${username} is deleted`);
         return false;
     }
 
     const compare = bcrypt.compareSync(inputPW, user.password);
 
     if (!compare) {
-        console.log(`User ${username} enetered a wrong password`);
         return false;
     }
 

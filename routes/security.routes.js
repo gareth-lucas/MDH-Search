@@ -5,6 +5,9 @@ const securityService = require('../services/security/security.service');
 const adminService = require('../services/admin/admin.service');
 const emailService = require('../services/email/email.service');
 const bcyrpt = require('bcrypt');
+const fs = require("fs").promises;
+const path = require("path");
+const interpolate = require('../helpers/interpolate');
 
 router.post('/login', login);
 router.get('/logout', logout);
@@ -47,8 +50,6 @@ async function changePassword(req, res, next) {
 
         if (req.body.resetCode) {
             if (req.body.resetCode !== user.resetCode) {
-                console.log("Email Reset Code:", req.body.resetCode);
-                console.log("DB Reset COde:", user.resetCode);
                 return res.status(400).send({ message: "Errore - impossibile resettare la password" });
             }
         }
@@ -63,7 +64,7 @@ async function changePassword(req, res, next) {
         const hashedPw = bcyrpt.hashSync(req.body.password, 10);
         const updatedUser = await adminService.updateUser(user.rowid, { password: hashedPw, resetCode: null, forceResetOn: null });
         if (!updatedUser) {
-            console.log(`Unable to update user`);
+            console.error(`Unable to update user`);
             return res.status(400).send({ message: "error updating user" });
         }
 
@@ -80,32 +81,35 @@ async function resetPassword(req, res, next) {
 
         const user = await adminService.getUserByEmail(email);
         if (!user) {
-            console.log("User not found for password reset: " + email);
+            console.error("User not found for password reset: " + email);
             return res.send();
         }
 
         const resetCode = nanoid(32);
         const updatedUser = await adminService.updateUser(user.rowid, { resetCode: resetCode });
         if (!updatedUser) {
-            console.log("User not updated: " + email);
+            console.error("User not updated: " + email);
             return res.send();
         }
+
+        const template = await fs.readFile(
+            path.join(__dirname, "../templates/passwordResetEmail.tpl"),
+            "utf-8"
+        );
+
+        const mailContent = interpolate(template, {
+            user_name: updatedUser.name,
+            site_url: process.env.SITE_URL,
+            user_email: encodeURI(updatedUser.email),
+            reset_code: encodeURI(updatedUser.resetCode),
+            site_support: process.env.SITE_SUPPORT
+        });
 
         const emailObj = {
             to: process.env.NODE_ENV === 'production' ? email : process.env.TEST_EMAIL_RECEIVER,
             from: process.env.EMAIL_USER,
             subject: 'MDH Search - Richiesta reset di password',
-            body: `<html>
-<head>
-    <title>Richiesta reset di password</title>
-</head>
-<body>
-    <p>Ciao ${updatedUser.name},</p><p>Hai ricevuto questa mail perché ci è arrivata una richiesta di fare reset della password. Se non sei stato tu a richiedere il reset, ignora questa email</p>
-    <p>Per fare il reset, prego cliccare sul link <a href="${process.env.SITE_URL}/passwordReset?email=${encodeURI(updatedUser.email)}&resetCode=${updatedUser.resetCode}">Reset Password</a></p>
-    <p>Per qualsiasi problema, prego contattare ${process.env.SITE_SUPPORT}</p>
-    <p>Saluti, MDH Search</p>
-</body>
-</html>`
+            body: mailContent
         }
 
         await emailService.sendMail(emailObj);

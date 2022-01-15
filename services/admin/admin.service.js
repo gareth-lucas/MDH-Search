@@ -155,14 +155,18 @@ async function createUser(data) {
             ? data.email
             : process.env.TEST_EMAIL_RECEIVER;
 
-        await emailService.sendMail({
-          to: sendTo,
-          from: process.env.SITE_SUPPORT,
-          subject: "Benvenuto in MDH Search",
-          body: content,
-        });
+        try {
+          await emailService.sendMail({
+            to: sendTo,
+            from: process.env.SITE_SUPPORT,
+            subject: "Benvenuto in MDH Search",
+            body: content,
+          });
 
-        resolve(await getUserByEmail(data.email));
+          resolve(await getUserByEmail(data.email));
+        } catch (err) {
+          reject(err);
+        }
       }
     );
   });

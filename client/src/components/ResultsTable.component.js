@@ -5,7 +5,6 @@ import { PaginatedTable } from "./PaginatedTable";
 const ResultsTable = ({ results, onSelectResult }) => {
   // listen to the results prop and render on change
   useEffect(() => {
-    console.log("RESULTS", results);
   }, [results]);
 
   const createAddress = (address) => {
@@ -63,8 +62,6 @@ const ResultsTable = ({ results, onSelectResult }) => {
       ]
     }));
   }
-
-  console.log(tableResults);
 
   const columns = ['id', 'name2', 'name1', 'address', 'origin', '_actions'];
   const columnNames = ['SAP ID', 'Cognome', 'Nome', 'Indirizzo', 'Stato', 'Azioni'];

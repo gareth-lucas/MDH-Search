@@ -21,7 +21,7 @@ const runSetup = async () => {
             });
 
             console.log("Creating savedSearches table...");
-            sql = `CREATE TABLE IF NOT EXISTS savedSearches (email TEXT, description TEXT, searchParams TEXT)`;
+            sql = `CREATE TABLE IF NOT EXISTS savedSearches (idUser TEXT, description TEXT, searchParams TEXT, creationDate DATETIME)`;
             db.run(sql, {}, function (err) {
                 if (err) {
                     console.error("ERROR: ", err);
