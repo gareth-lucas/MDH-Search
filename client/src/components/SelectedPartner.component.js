@@ -141,6 +141,7 @@ const SelectedPartner = ({ selectedPartner, setLoading }) => {
                             <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Modificato:</span><span>{selectedPartner.updateDate}</span></li>
                             <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Causa Quarantena:</span><span>{selectedPartner.cause}</span></li>
                             <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Motivo:</span><span>{selectedPartner.reason}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Match Rule:</span><span>{partner.duplicateInfo[0]?.matchRule || 'Unknown'}</span></li>
                             <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Risoluzione:</span><span>{selectedPartner.resolution}</span></li>
                         </ul>
 
