@@ -44,6 +44,7 @@ const SelectedPartner = ({ selectedPartner, setLoading }) => {
 
                     const duplicateInfo = response.MatchResult.filter(m => (m.duplicate)).map(m => {
                         return {
+                            matchRule: m.$.matchRule,
                             recordId: m.duplicate.bupa.id,
                             sap_id: m.duplicate.bupa.sap_id,
                             name1: m.duplicate.bupa.name1,
@@ -58,6 +59,8 @@ const SelectedPartner = ({ selectedPartner, setLoading }) => {
                             }
                         }
                     })
+
+
 
                     setPartner(s => ({ ...s, ...selectedPartner, duplicateInfo: duplicateInfo }));
                 } catch (err) {
@@ -87,7 +90,6 @@ const SelectedPartner = ({ selectedPartner, setLoading }) => {
 
     return (
         <>
-            <div>{JSON.stringify(partner)}</div>
             <div style={{
                 width: "50%",
                 position: "fixed",
