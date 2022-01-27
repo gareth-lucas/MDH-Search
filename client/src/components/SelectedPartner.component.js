@@ -44,6 +44,7 @@ const SelectedPartner = ({ selectedPartner, setLoading }) => {
 
                     const duplicateInfo = response.MatchResult.filter(m => (m.duplicate)).map(m => {
                         return {
+                            matchRule: m.$.matchRule,
                             recordId: m.duplicate.bupa.id,
                             sap_id: m.duplicate.bupa.sap_id,
                             name1: m.duplicate.bupa.name1,
@@ -58,6 +59,8 @@ const SelectedPartner = ({ selectedPartner, setLoading }) => {
                             }
                         }
                     })
+
+
 
                     setPartner(s => ({ ...s, ...selectedPartner, duplicateInfo: duplicateInfo }));
                 } catch (err) {
@@ -87,7 +90,6 @@ const SelectedPartner = ({ selectedPartner, setLoading }) => {
 
     return (
         <>
-            <div>{JSON.stringify(partner)}</div>
             <div style={{
                 width: "50%",
                 position: "fixed",
@@ -139,6 +141,7 @@ const SelectedPartner = ({ selectedPartner, setLoading }) => {
                             <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Modificato:</span><span>{selectedPartner.updateDate}</span></li>
                             <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Causa Quarantena:</span><span>{selectedPartner.cause}</span></li>
                             <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Motivo:</span><span>{selectedPartner.reason}</span></li>
+                            <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Match Rule:</span><span>{partner.duplicateInfo[0]?.matchRule || 'Unknown'}</span></li>
                             <li className="list-group-item"><span style={{ display: "inline-block", width: "200px", fontWeight: "bold" }}>Risoluzione:</span><span>{selectedPartner.resolution}</span></li>
                         </ul>
 

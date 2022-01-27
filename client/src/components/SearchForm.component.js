@@ -304,7 +304,7 @@ const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage 
 
         <div className="form-group row pt-1">
           <label htmlFor="SEARCHTERM" className="col-sm-3 col-form-label">
-            Search Term
+            Termine di Ricerca
           </label>
           <div className="col-sm-2">
             <OperationDropdown
@@ -322,7 +322,7 @@ const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage 
               name="SEARCHTERM"
               value={form.SEARCHTERM}
               onChange={(e) => onChangeTextField(e)}
-              placeholder="Search Term..."
+              placeholder="Termine di Ricerca..."
             />
           </div>
           <div className="col-sm-1">
@@ -373,7 +373,7 @@ const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage 
         </div>
 
         <div className="form-group row pt-1">
-          <label htmlFor="CITY" className="col-sm-3 col-form-label">City</label>
+          <label htmlFor="CITY" className="col-sm-3 col-form-label">Città</label>
           <div className="col-sm-2">
             <OperationDropdown
               name="CITY_OPERATION"
