@@ -204,6 +204,7 @@ async function queryQ(req, res, next) {
 
     // transform XML response to JSON
     const parsedData = await xml2js.parseStringPromise(data, { explicitArray: false }).then(result => {
+        console.log(result);
         return result;
     }).catch(err => {
         console.error(err.data);
