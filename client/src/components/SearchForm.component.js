@@ -19,8 +19,8 @@ const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage 
     STREET_OPERATION: "EQUALS",
     CITY: "",
     CITY_OPERATION: "EQUALS",
-    EMAIL: "",
-    EMAIL_OPERATION: "EQUALS",
+    EMAIL_1: "",
+    EMAIL_1_OPERATION: "EQUALS",
     POSTAL_CODE: "",
     POSTAL_CODE_OPERATION: "EQUALS",
     SEARCHTERM: "",
@@ -128,7 +128,9 @@ const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage 
       "CREATIONDATE",
       "CREATEDBY",
       "MODIFYDATE",
-      "MODIFIEDBY"
+      "MODIFIEDBY",
+      "EMAIL_1",
+      "BIRTHDATE"
     ];
 
     // sort fields
@@ -457,8 +459,8 @@ const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage 
             <input
               className="form-control"
               type="text"
-              name="EMAIL"
-              value={form.EMAIL}
+              name="EMAIL_1"
+              value={form.EMAIL_1}
               onChange={(e) => onChangeTextField(e)}
               placeholder="Email..."
             />
@@ -469,7 +471,7 @@ const SearchForm = ({ setResults, setState, setLoading, currentUser, setMessage 
               style={{ cursor: "pointer" }}
               color="#F00"
               onClick={() => {
-                resetField("EMAIL");
+                resetField("EMAIL_1");
               }}
             />
           </div>
