@@ -42,7 +42,6 @@ const UserForm = ({ selectedUser, onHide, onUserCreate }) => {
         const { name, surname, email, role } = form;
 
         if (name.trim() === '' || surname.trim() === '' || email.trim() === '' || role.trim() === '') {
-            console.log("Fields not filled")
             setError({ general: `Compilare tutti i campi` });
             return;
         }

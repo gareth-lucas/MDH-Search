@@ -32,5 +32,5 @@ app.use('/profile', profileRoutes);
 
 const port = process.env.PORT || 3000
 https.createServer(options, app).listen(port, () => {
-    console.log(`MDH Search Tool listening at https://localhost:${port}`)
+    console.log(`Ricerca BP listening at https://localhost:${port}`)
 })

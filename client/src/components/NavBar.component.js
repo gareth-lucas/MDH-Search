@@ -67,7 +67,7 @@ const NavBar = ({ currentUser, ...props }) => {
           src={`${process.env.PUBLIC_URL}/ses_logo.200x77.png`}
           alt="SES Logo"
         />
-        <span className="h1" style={{ verticalAlign: 'middle' }}>MDH <span className="ses-primary">Search</span></span>
+        <span className="h1" style={{ verticalAlign: 'middle' }}>Ricerca <span className="ses-primary">BP</span></span>
       </Link>
       <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span className="navbar-toggler-icon"></span>

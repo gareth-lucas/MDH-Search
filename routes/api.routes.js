@@ -204,7 +204,6 @@ async function queryQ(req, res, next) {
 
     // transform XML response to JSON
     const parsedData = await xml2js.parseStringPromise(data, { explicitArray: false }).then(result => {
-        console.log(result);
         return result;
     }).catch(err => {
         console.error(err.data);
@@ -274,7 +273,7 @@ async function fetchPotentialDuplicates(req, res, next) {
     const url = `https://${host}/mdm/universes/${universeId}/match`;
 
     const request = `<batch src="BP_CSV">
-    <bupa> 
+    <bupa>
     ${createFields.join('')}
     ${addressTag}
     </bupa>
